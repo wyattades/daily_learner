@@ -1,0 +1,19 @@
+# Python and packages
+.pythonhistory
+*.py[co]
+pip-log.txt
+*.log
+*.egg
+*.egg-info
+*.mo
+
+# Web2py specific folders
+sessions/
+cache/
+errors/
+databases/
+uploads/
+private/
+
+# Other
+.vscode/
