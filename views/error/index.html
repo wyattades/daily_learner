@@ -1,0 +1,15 @@
+{{extend 'layout.html'}}
+
+{{block header}}
+<section class="hero is-warning is-large">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">{{=status}} Error</h1>
+      <p class="subtitle">{{=message}}</p>
+      {{if ticket != 'None':}}
+        <p>Ticket: <a href="{{=URL('admin', 'default', 'ticket', args=[ticket])}}">{{=ticket}}</a></p>
+      {{pass}}
+    </div>
+  </div>
+</section>
+{{end}}

@@ -12,8 +12,8 @@ from gluon.tools import Auth
 # File is released under public domain and you can use without limitations
 # -------------------------------------------------------------------------
 
-if request.global_settings.web2py_version < "2.15.5":
-    raise HTTP(500, "Requires web2py 2.15.5 or newer")
+if request.global_settings.web2py_version < '2.15.5':
+    raise HTTP(500, 'Requires web2py 2.15.5 or newer')
 
 # -------------------------------------------------------------------------
 # if SSL/HTTPS is properly configured and you want all HTTP requests to
@@ -31,9 +31,9 @@ if not request.env.web2py_runtime_gae:
     # if NOT running on Google App Engine use SQLite or other DB
     # ---------------------------------------------------------------------
     db = DAL(configuration.get('db.uri'),
-             pool_size=configuration.get('db.pool_size'),
-             migrate_enabled=configuration.get('db.migrate'),
-             check_reserved=['all'])
+            pool_size=configuration.get('db.pool_size'),
+            migrate_enabled=configuration.get('db.migrate'),
+            check_reserved=['all'])
 else:
     # ---------------------------------------------------------------------
     # connect to Google BigTable (optional 'google:datastore://namespace')
@@ -61,7 +61,57 @@ if request.is_local and not configuration.get('app.production'):
 # -------------------------------------------------------------------------
 # choose a style for forms
 # -------------------------------------------------------------------------
-response.formstyle = 'bootstrap4_inline'
+def add_class(a, b):
+    return a + ' ' + b if a else b
+
+# TODO: clean this up a bit
+def formstyle_bulma(form, fields):
+    col_label_size = 3
+    form.add_class('form-horizontal')
+    label_col_class = 'col-sm-%d' % col_label_size
+    col_class = 'col-sm-%d' % (12 - col_label_size)
+    offset_class = 'col-sm-offset-%d' % col_label_size
+    parent = CAT()
+    for id, label, controls, help in fields:
+        # wrappers
+        _help = SPAN(help, _class='help')
+        # embed _help into _controls
+        _controls = DIV(controls, _help, _class='%s' % (col_class))
+        if isinstance(controls, INPUT):
+            if controls['_type'] == 'submit':
+                controls.add_class('button is-primary')
+                _controls = DIV(controls, _class='buttons %s %s' % (col_class, offset_class))
+            if controls['_type'] == 'button':
+                controls.add_class('button is-secondary')
+            elif controls['_type'] == 'file':
+                controls.add_class('file')
+            elif controls['_type'] in ('text', 'password'):
+                controls.add_class('input')
+            elif controls['_type'] == 'checkbox':
+                label['_for'] = None
+                label.insert(0, controls)
+                label.insert(1, ' ')
+                _controls = DIV(DIV(label, _help, _class='checkbox'),
+                                _class='%s %s' % (offset_class, col_class))
+                label = ''
+            elif isinstance(controls, (SELECT, TEXTAREA)):
+                controls.add_class('control')
+
+        elif isinstance(controls, SPAN):
+            _controls = P(controls.components,
+                            _class='control-static %s' % col_class)
+        elif isinstance(controls, UL):
+            for e in controls.elements('input'):
+                e.add_class('control')
+        elif isinstance(controls, CAT) and isinstance(controls[0], INPUT):
+                controls[0].add_class('control')
+        if isinstance(label, LABEL):
+            label['_class'] = add_class(label.get('_class'), 'label %s' % label_col_class)
+
+        parent.append(DIV(label, _controls, _class='field', _id=id))
+    return parent
+
+response.formstyle = formstyle_bulma
 response.form_label_separator = ''
 
 # -------------------------------------------------------------------------

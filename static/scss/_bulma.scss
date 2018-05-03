@@ -1,0 +1,19 @@
+@import "bulma/sass/utilities/initial-variables";
+@import "bulma/sass/utilities/functions";
+// Set up initial variables here
+
+// TODO: use of these themes https://jenil.github.io/bulmaswatch/
+
+$primary: #1ba2e6;
+
+@import "bulma/sass/utilities/derived-variables";
+// Add colors to color-map
+
+
+// Import the rest of bulma
+@import "bulma/bulma";
+
+// Fix button spacing
+.button > .fas:first-child {
+  margin-right: 8px;
+}

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-# -------------------------------------------------------------------------
-# This is a sample controller
-# this file is released under public domain and you can use without limitations
-# -------------------------------------------------------------------------
 
-# ---- example index page ----
+# Static pages
 def index():
-    # response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    return dict()
+def about():
+    return dict()
+def tutorial():
+    return dict()
 
 # ---- API (example) -----
 @auth.requires_login()
@@ -56,3 +55,4 @@ def download():
     http://..../[app]/default/download/[filename]
     """
     return response.download(request, db)
+    

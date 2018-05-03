@@ -17,3 +17,7 @@ private/
 
 # Other
 .vscode/
+
+# Node
+package-lock.json
+node_modules/
