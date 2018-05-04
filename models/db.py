@@ -82,20 +82,23 @@ def formstyle_bulma(form, fields):
                 controls.add_class('button is-primary')
                 _controls = DIV(controls, _class='buttons %s %s' % (col_class, offset_class))
             if controls['_type'] == 'button':
-                controls.add_class('button is-secondary')
+                controls.add_class('button is-link')
             elif controls['_type'] == 'file':
                 controls.add_class('file')
             elif controls['_type'] in ('text', 'password'):
                 controls.add_class('input')
             elif controls['_type'] == 'checkbox':
                 label['_for'] = None
+                controls.attributes['_class'] = 'checkbox'
                 label.insert(0, controls)
                 label.insert(1, ' ')
                 _controls = DIV(DIV(label, _help, _class='checkbox'),
                                 _class='%s %s' % (offset_class, col_class))
                 label = ''
-            elif isinstance(controls, (SELECT, TEXTAREA)):
-                controls.add_class('control')
+            elif isinstance(controls, SELECT):
+                controls.add_class('select')
+            elif isinstance(controls, TEXTAREA):
+                controls.add_class('textarea')
 
         elif isinstance(controls, SPAN):
             _controls = P(controls.components,

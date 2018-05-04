@@ -1,0 +1,62 @@
+<nav class="navbar is-transparent">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <h2><strong>Daily Learner</strong></h2>
+      </a>
+      <div class="navbar-burger burger" data-target="navbar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div id="navbar" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{=URL('default','about')}}">
+          About
+        </a>
+        <a class="navbar-item" href="{{=URL('default','tutorial')}}">
+          Tutorial
+        </a>
+      </div>
+
+      {{if 'auth' in globals():}}
+      <div class="navbar-end">
+        {{if auth.user:}}
+        <a class="navbar-item" href="{{=URL('default','session')}}">
+          <span class="icon"><i class="fas fa-list"></i></span><span>Sessions</span>
+        </a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="{{=URL('default','user/profile')}}">
+            <span class="icon"><i class="fas fa-user"></i></span><span>{{=auth.user.first_name}}</span>
+          </a>
+          <div class="navbar-dropdown is-boxed is-right">
+            <a class="navbar-item" href="{{=URL('default','user/profile')}}">{{=T('Profile')}}</a>
+            <a class="navbar-item" href="{{=URL('default','user/change_password')}}">{{=T('Change Password')}}</a>
+            <a class="navbar-item" href="{{=URL('default','user/logout')}}">{{=T('Logout')}}</a>
+          </div>
+        </div>
+        {{else:}}
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="button" href="{{=URL('default','user/login')}}">
+                <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                <span>Login</span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-primary" href="{{=URL('default','user/register')}}">
+                <span class="icon"><i class="fas fa-user-plus"></i></span>
+                <span>Register</span>
+              </a>
+            </p>
+          </div>
+        </div>
+        {{pass}}
+      </div>
+      {{pass}}
+    </div>
+  </div>
+</nav>

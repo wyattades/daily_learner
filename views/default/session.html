@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+
+
+<section class="section">
+  <div class="container">
+    {{=grid}}
+  </div>
+</section>
+
+{{ if ('analytics' in globals()) and analytics:}}
+<section class="section">
+  <div class="container">
+    <h2 class="is-size-2">Analytics</h2>
+    {{=analytics}}
+  </div>
+</section>
+{{pass}}

@@ -9,13 +9,21 @@ A webapp for entering arbitrary data in a way that's accessible to anyone. Easil
 2. `$ npm install`
 3. `$ npm install -g gulp-cli`
 
-To set this project as `web2py`'s default, create a `routes.py` file in the `web2py` folder with the following content:
+To set this project as `web2py`'s default _and_ shorten all URLs, create a `routes.py` file in the `web2py` folder with the following content:
 ```python
 default_application='daily_learner'
 
 routes_onerror = [
-    ('*/*', '/daily_learner/error/index')
+  ('*/*', '/daily_learner/error/index')
 ]
+
+routes_in = [
+  ('/admin/$anything', '/admin/$anything'),
+  ('/$app/static/$anything', '/$app/static/$anything'),
+  ('/$app/error/$anything', '/$app/error/$anything'),
+  ('/$anything', '/daily_learner/default/$anything')
+]
+routes_out = [ (x, y) for (y, x) in routes_in[2:] ]
 ```
 
 
@@ -28,3 +36,7 @@ Then visit `localhost:8000` to view the Daily Learner website.
 ## Production
 
 To start a headless production server, go to the root `web2py` folder then run `python web2py.py -a <password>`.
+
+## TODO
+- move session to its own controller
+- make a new db table for every session, will make a lot of hacky code unnecessary

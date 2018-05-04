@@ -3,3 +3,31 @@
 
 // This file contains any custom styling
 
+// Make footer stick to bottom if page is too short
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+main.main-content {
+  flex: 1;
+}
+
+// Web2py's button row
+.row_buttons > *:not(:last-child) {
+  margin-right: 16px;
+}
+
+// Fix button spacing
+.button > .fas:first-child {
+  margin-right: 8px;
+}
+
+// Fixed notification position
+.notification {
+  margin: 0 !important;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 400px;
+}

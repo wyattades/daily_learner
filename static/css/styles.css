@@ -6419,5 +6419,23 @@ label.panel-block {
   background-color: #fafafa;
   padding: 3rem 1.5rem 6rem; }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; }
+
+main.main-content {
+  flex: 1; }
+
+.row_buttons > *:not(:last-child) {
+  margin-right: 16px; }
+
 .button > .fas:first-child {
   margin-right: 8px; }
+
+.notification {
+  margin: 0 !important;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 400px; }

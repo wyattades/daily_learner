@@ -1,4 +1,7 @@
+
+
 codes = {
+    '0': 'An unknown error occurred!',
     '403': 'Sorry, you don\'t have access!',
     '404': 'Sorry, the thing you want isn\'t here!',
     '500': 'Sorry, something went wrong on our end!',
@@ -7,9 +10,9 @@ codes = {
 
 def index():
     status = request.vars.code
-    msg = codes.get(status)
-
-    if (msg == None): msg = 'An unknown error occurred!'
-    if (status == None): status = '0'
-
-    return dict(message=msg, status=status, ticket=request.vars.ticket)
+    message = request.vars.message
+    if (status == None or status not in codes):
+        status = '0'
+    if (message == None):
+        message = codes.get(status)
+    return dict(message=message, status=request.vars.code, ticket=request.vars.ticket)

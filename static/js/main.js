@@ -1,15 +1,21 @@
 
-// Add a click event on each of them
-document.querySelectorAll('.navbar-burger').forEach(function ($el) {
-  $el.addEventListener('click', function () {
+// Navbar burger
 
-    // Get the target from the "data-target" attribute
-    var target = $el.dataset.target;
-    var $target = document.getElementById(target);
-
-    // Toggle the class on both the "navbar-burger" and the "navbar-menu"
-    $el.classList.toggle('is-active');
-    $target.classList.toggle('is-active');
-
-  });
+$('.navbar-burger').click(function() {
+  const $el = $(this);
+  $el.toggleClass('is-active');
+  $('#' + $el.data('target')).toggleClass('is-active');
 });
+
+// Notification popups
+
+$('.notification > .delete').click(function() {
+  $(this).parent().remove();
+});
+
+$('.notification')
+.delay(4000)
+.fadeOut(500, function() {
+  $(this).remove();
+});
+

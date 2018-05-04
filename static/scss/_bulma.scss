@@ -12,8 +12,3 @@ $primary: #1ba2e6;
 
 // Import the rest of bulma
 @import "bulma/bulma";
-
-// Fix button spacing
-.button > .fas:first-child {
-  margin-right: 8px;
-}
