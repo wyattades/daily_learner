@@ -14,8 +14,16 @@ main.main-content {
 }
 
 // Web2py's button row
-.row_buttons > *:not(:last-child) {
-  margin-right: 16px;
+.row_buttons {
+  text-align: right;
+  & > :not(:last-child) {
+    margin-right: 16px;
+  }
+}
+
+// Fix more button spacing
+.control > .button + .button {
+  margin-left: 16px;
 }
 
 // Fix button spacing

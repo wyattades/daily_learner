@@ -32,6 +32,9 @@
             <span class="icon"><i class="fas fa-user"></i></span><span>{{=auth.user.first_name}}</span>
           </a>
           <div class="navbar-dropdown is-boxed is-right">
+            {{if auth.has_membership('admin'):}}
+            <a class="navbar-item" href="{{=URL('default','admin_panel')}}">{{=T('Admin Panel')}}</a>
+            {{pass}}
             <a class="navbar-item" href="{{=URL('default','user/profile')}}">{{=T('Profile')}}</a>
             <a class="navbar-item" href="{{=URL('default','user/change_password')}}">{{=T('Change Password')}}</a>
             <a class="navbar-item" href="{{=URL('default','user/logout')}}">{{=T('Logout')}}</a>

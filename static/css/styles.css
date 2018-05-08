@@ -6427,8 +6427,13 @@ body {
 main.main-content {
   flex: 1; }
 
-.row_buttons > *:not(:last-child) {
-  margin-right: 16px; }
+.row_buttons {
+  text-align: right; }
+  .row_buttons > :not(:last-child) {
+    margin-right: 16px; }
+
+.control > .button + .button {
+  margin-left: 16px; }
 
 .button > .fas:first-child {
   margin-right: 8px; }

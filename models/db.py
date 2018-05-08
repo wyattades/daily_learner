@@ -61,38 +61,38 @@ if request.is_local and not configuration.get('app.production'):
 # -------------------------------------------------------------------------
 # choose a style for forms
 # -------------------------------------------------------------------------
-def add_class(a, b):
-    return a + ' ' + b if a else b
 
 # TODO: clean this up a bit
 def formstyle_bulma(form, fields):
     col_label_size = 3
-    form.add_class('form-horizontal')
+
     label_col_class = 'col-sm-%d' % col_label_size
     col_class = 'col-sm-%d' % (12 - col_label_size)
     offset_class = 'col-sm-offset-%d' % col_label_size
     parent = CAT()
+
     for id, label, controls, help in fields:
         # wrappers
-        _help = SPAN(help, _class='help')
+        _help = [SPAN(help, _class='help')] if help else []
+
         # embed _help into _controls
-        _controls = DIV(controls, _help, _class='%s' % (col_class))
+        _controls = DIV(controls, *_help, _class='control %s' % (col_class))
         if isinstance(controls, INPUT):
             if controls['_type'] == 'submit':
-                controls.add_class('button is-primary')
-                _controls = DIV(controls, _class='buttons %s %s' % (col_class, offset_class))
+                controls = BUTTON(controls['_value'], _class='button is-primary', **controls.attributes)
+                _controls = DIV(controls, _class='control %s %s' % (col_class, offset_class))
             if controls['_type'] == 'button':
                 controls.add_class('button is-link')
             elif controls['_type'] == 'file':
                 controls.add_class('file')
             elif controls['_type'] in ('text', 'password'):
-                controls.add_class('input')
+                controls.add_class(' input')
             elif controls['_type'] == 'checkbox':
                 label['_for'] = None
                 controls.attributes['_class'] = 'checkbox'
                 label.insert(0, controls)
                 label.insert(1, ' ')
-                _controls = DIV(DIV(label, _help, _class='checkbox'),
+                _controls = DIV(DIV(label, *_help, _class='checkbox'),
                                 _class='%s %s' % (offset_class, col_class))
                 label = ''
             elif isinstance(controls, SELECT):
@@ -104,18 +104,22 @@ def formstyle_bulma(form, fields):
             _controls = P(controls.components,
                             _class='control-static %s' % col_class)
         elif isinstance(controls, UL):
-            for e in controls.elements('input'):
-                e.add_class('control')
+            def replace_li(li):
+                li.components[0].add_class('input')
+                return LI(DIV(li.components[0],
+                    _class='control is-expanded'),
+                    _class='field is-grouped')
+            controls.elements('li', replace=replace_li) 
         elif isinstance(controls, CAT) and isinstance(controls[0], INPUT):
                 controls[0].add_class('control')
         if isinstance(label, LABEL):
-            label['_class'] = add_class(label.get('_class'), 'label %s' % label_col_class)
+            label.add_class('label %s' % label_col_class)
 
         parent.append(DIV(label, _controls, _class='field', _id=id))
     return parent
 
 response.formstyle = formstyle_bulma
-response.form_label_separator = ''
+# response.form_label_separator = ''
 
 # -------------------------------------------------------------------------
 # (optional) optimize handling of static files
@@ -183,25 +187,3 @@ response.google_analytics_id = configuration.get('google.analytics_id')
 if configuration.get('scheduler.enabled'):
     from gluon.scheduler import Scheduler
     scheduler = Scheduler(db, heartbeat=configure.get('heartbeat'))
-
-# -------------------------------------------------------------------------
-# Define your tables below (or better in another model file) for example
-#
-# >>> db.define_table('mytable', Field('myfield', 'string'))
-#
-# Fields can be 'string','text','password','integer','double','boolean'
-#       'date','time','datetime','blob','upload', 'reference TABLENAME'
-# There is an implicit 'id integer autoincrement' field
-# Consult manual for more options, validators, etc.
-#
-# More API examples for controllers:
-#
-# >>> db.mytable.insert(myfield='value')
-# >>> rows = db(db.mytable.myfield == 'value').select(db.mytable.ALL)
-# >>> for row in rows: print row.id, row.myfield
-# -------------------------------------------------------------------------
-
-# -------------------------------------------------------------------------
-# after defining tables, uncomment below to enable auditing
-# -------------------------------------------------------------------------
-# auth.enable_record_versioning(db)

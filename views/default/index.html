@@ -1,7 +1,6 @@
 {{extend 'layout.html'}}
 
 
-{{block header}}
 <section class="hero is-primary is-medium is-bold">
   <div class="hero-body">
     <div class="container">
@@ -10,8 +9,6 @@
     </div>
   </div>
 </section>
-{{end}}
-
 
 <section class="section">
   <div class="container">
@@ -26,16 +23,3 @@
   </div>
   </div>
 </section>
-
-
-{{if 'message' in globals():}}
-<section class="section">
-  <div class="container">
-    Message: {{=message}}
-  </div>
-</section>
-{{elif 'content' in globals():}}
-{{=content}}
-{{else:}}
-{{=BEAUTIFY(response._vars)}}
-{{pass}}

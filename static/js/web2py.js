@@ -128,7 +128,7 @@
                     rel(ul);
                     if ($(e.target).parent().is(':visible')) {
                         /* make sure we didn't delete the element before we insert after */
-                        new_line.insertAfter($(e.target).parent());
+                        new_line.insertAfter($(e.target).parents('li:first'));
                     } else {
                         /* the line we clicked on was deleted, just add to end of list */
                         new_line.appendTo(ul);
@@ -140,7 +140,7 @@
                 function rl(ul, e) {
                     if ($(ul).children().length > 1) {
                         /* only remove if we have more than 1 item so the list is never empty */
-                        $(e.target).parent().remove();
+                        $(e.target).parents('li:first').remove();
                     }
                 }
 
@@ -154,19 +154,39 @@
                 function rel(ul) {
                     /* keep only as many as needed*/
                     $(ul).find('li').each(function () {
-                        var trimmed = $.trim($(this.firstChild).val());
-                        if (trimmed === '') $(this).remove();
-                        else $(this.firstChild).val(trimmed);
+                        var $this = $(this);
+                        var $text = $this.find(':text:first');
+                        var trimmed = $.trim($text.val());
+                        if (trimmed === '') $this.remove();
+                        else $text.val(trimmed);
                     });
                 }
                 var ul = this;
-                $(ul).find(':text').after('<a href="#">+</a>&nbsp;<a href="#">-</a>').keypress(
-                    function (e) {
-                        return (e.which == 13) ? pe(ul, e) : true;
-                    }).next().click(function (e) {
+                $(ul).find('li > :first-child')
+                .after(
+                '<div class="control">' +
+                    '<button class="button has-text-success">' +
+                        '<span class="icon">' +
+                            '<i class="fas fa-plus"></i>' +
+                        '</span>' +
+                    '</button>' +
+                '</div>' +
+                '<div class="control">' +
+                    '<button class="button has-text-danger">' +
+                        '<span class="icon">' +
+                            '<i class="fas fa-minus"></i>' +
+                        '</span>' +
+                    '</button>' +
+                '</div>'
+                )
+                .keypress(function (e) {
+                    return (e.which == 13) ? pe(ul, e) : true;
+                })
+                .next().click(function (e) {
                     pe(ul, e);
                     e.preventDefault();
-                }).next().click(function (e) {
+                })
+                .next().click(function (e) {
                     rl(ul, e);
                     e.preventDefault();
                 });
@@ -572,7 +592,7 @@
             if (!web2py.isUndefined(el.data('w2p_disable'))) {
                 return false;
             }
-            el.addClass('disabled');
+            el.addClass('disabled is-loading');
             var method = el.is('input') ? 'val' : 'html';
             //method = el.attr('name') ? 'html' : 'val';
             var disable_with_message = (!web2py.isUndefined(w2p_ajax_disable_with_message)) ?
@@ -585,10 +605,11 @@
              * two lines with this one
              * el.data('w2p_disable_with', el[method]());
              */
-            if ((el.data('w2p_disable_with') == 'default') || (web2py.isUndefined(el.data(
-                    'w2p_disable_with')))) {
-                el.data('w2p_disable_with', disable_with_message);
-            }
+            // if ((el.data('w2p_disable_with') == 'default') || (web2py.isUndefined(el.data(
+            //         'w2p_disable_with')))) {
+            //     el.data('w2p_disable_with', disable_with_message);
+            // }
+            el.data('w2p_disable_with', el[method]());
 
             /* set to disabled state*/
             el[method](el.data('w2p_disable_with'));
@@ -606,7 +627,7 @@
                 el[method](el.data('w2p_enable_with'));
                 el.removeData('w2p_enable_with');
             }
-            el.removeClass('disabled');
+            el.removeClass('disabled is-loading');
             el.unbind('click.w2pDisable');
         },
         /*convenience wrapper, internal use only */
