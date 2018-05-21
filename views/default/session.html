@@ -13,6 +13,17 @@
       </ul>
     </nav>
     {{pass}}
+    {{if 'description' in globals() and description:}}
+    <!-- <div class="card">
+      <header class="card-header">
+        <p class="card-header-title">Description</p>
+      </header>
+      <div class="card-content">
+        {{=description}}
+      </div>
+    </div> -->
+    <pre>{{=description}}</pre>
+    {{pass}}
     <br/>
     
     {{=grid}}

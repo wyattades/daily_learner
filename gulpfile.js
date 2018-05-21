@@ -5,7 +5,7 @@ const spawn = require('child_process').spawn;
 const PASSWORD = '1234';
 
 gulp.task('web2py', function (done) {
-  spawn('python', [ 'web2py.py', '-a', PASSWORD, '-e' ], {
+  spawn('python2', [ 'web2py.py', '-a', PASSWORD, '-e' ], {
     cwd: '../..',
     stdio: 'inherit',
   })

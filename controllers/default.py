@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from gluon.sqlhtml import ExporterCSV, ExporterXML, ExporterHTML, ExporterJSON
+
+export_formats = dict(
+    csv_with_hidden_cols=False,
+    json=(ExporterJSON, 'JSON'),
+    csv=(ExporterCSV, 'CSV'),
+    xml=(ExporterXML, 'XML'),
+    html=(ExporterHTML, 'HTML'),
+    tsv_with_hidden_cols=False,
+    tsv=False,
+)
+
 ui = dict(
     widget='',
     header='',
@@ -27,6 +39,10 @@ def about():
 def tutorial():
     return dict()
 
+# User login/register/etc (required for auth)
+def user():
+    return dict(form=auth())
+
 # Database admin access: '/admin_panel'
 @auth.requires_membership('admin')
 def admin_panel():
@@ -50,10 +66,6 @@ def admin_panel():
     
     return dict(grid=grid)
 
-# ---- Action for login/register/etc (required for auth) -----
-def user():
-    return dict(form=auth())
-
 # ---- action to server uploaded static content (required) ---
 # @cache.action()
 # def download():
@@ -62,26 +74,13 @@ def user():
 def _view_button(row):
     return A(SPAN('Go to this Session'), SPAN(I('', _class='fas fa-arrow-right'), _class='icon'), _class='button is-primary', _href=URL('default', 'session/%d' % row.id))
 
-def _entry_fields(labels, vals, error):
-    fields = [ DIV(
-                LABEL(labels[i], _class='label'),
-                INPUT(_type='number', _step=0.0001, _name='vals', _class='input', _value=vals and vals[i], requires=IS_DECIMAL_IN_RANGE(0.0, 1.0)),
-                _class='field'
-            ) for i in range(len(labels)) ]
-    if error:
-        fields.append(DIV(error, _class='error'))
-
-    return CAT(*fields)
-
-def _delete_entries(_, session_id):
-    query = (db.entries.session_id == session_id)
-    db(query).delete()
-
 def _view_session(session_record):
     action = request.args(1)
 
     # if action and action not in ['new','delete','edit']:
     #     raise HTTP(404)
+
+    table = get_session_table(session_record.id)        
 
     crumbs = [
         ('Sessions', URL('default', 'session')),
@@ -89,22 +88,14 @@ def _view_session(session_record):
     ]
     title = session_record.name
 
-
-    # Enforce that the number of vals equals the number of labels
-    rq = db.entries.vals.requires
-    rq.minimum = rq.maximum = len(session_record.labels)
-
-    tl = db.entries
-    query = (db.entries.session_id == session_record.id)
-
     # Calculate page
     if action == 'calculate':
         crumbs.append(('Calculator', ''))
         return dict(grid='Placeholder', title='Calculator', crumbs=crumbs)
 
-    grid = SQLFORM.grid(query,
+    grid = SQLFORM.grid(table,
         args=[session_record.id],
-        csv=False,
+        exportclasses=export_formats,
         ui=ui,
         _class='table',
         searchable=False,
@@ -112,23 +103,15 @@ def _view_session(session_record):
         details=False,
     )
 
-    prev_vals = None
-    vals_error = None
-
-    if action == 'edit': # Get previous vals and errors
-        prev_vals = grid.update_form.record.vals
-        vals_error = grid.update_form.errors.vals
-
+    if action == 'edit':
         crumbs.append(('Edit', ''))
         title = 'Edit Record'
     if action == 'new':
         crumbs.append(('New', ''))
         title = 'New Record'
-    if action in ['new','edit']: # Replace fields with user's custom fields
-        grid.element('#entries_vals__row.field', replace=lambda el: _entry_fields(session_record.labels, prev_vals, vals_error))
-        grid.element('#entries_result_val__label').components = [session_record.result_label]
 
-    return dict(grid=grid, crumbs=crumbs, title=title, analytics=not action and DIV('Placeholder'))
+    return dict(grid=grid, crumbs=crumbs, title=title, description=not action and session_record.description,
+                analytics=not action and DIV('Placeholder'))
 
 @auth.requires_login()
 def session():
@@ -150,7 +133,8 @@ def session():
         ui=ui,
         editable=False,
         searchable=False,
-        ondelete=_delete_entries,
+        oncreate=lambda form: create_session_table(form.vars.id, form.vars.labels, form.vars.result_label),
+        ondelete=lambda table,id: drop_session_table(id),
         _class='table',
         details=False,
         fields = [tl.name, tl.description, tl.created_on],
