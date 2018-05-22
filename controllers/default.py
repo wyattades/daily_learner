@@ -92,7 +92,7 @@ def _view_session(session_record):
     if action == 'calculate':
         crumbs.append(('Calculator', ''))
         return dict(grid='Placeholder', title='Calculator', crumbs=crumbs)
-
+        
     grid = SQLFORM.grid(table,
         args=[session_record.id],
         exportclasses=export_formats,
@@ -133,7 +133,7 @@ def session():
         ui=ui,
         editable=False,
         searchable=False,
-        oncreate=lambda form: create_session_table(form.vars.id, form.vars.labels, form.vars.result_label),
+        oncreate=lambda form: create_session_table(form.vars),
         ondelete=lambda table,id: drop_session_table(id),
         _class='table',
         details=False,
@@ -142,6 +142,19 @@ def session():
         links=[dict(header='', body=_view_button)],
         links_placement='left',
     )
+
+    # Fix form formatting in create_form
+    if grid.create_form is not None:
+        error = grid.create_form.errors.labels
+        grid.create_form.errors.labels = None
+        def replace_li(li):
+            input = li.element('input')
+            input.add_class('input')
+            return LI(DIV(input,
+                    _class='control is-expanded'),
+                    _class='field is-grouped')
+        grid.create_form.elements('ul li', replace=replace_li)
+        grid.create_form.elements('ul', replace=lambda ul: (CAT(ul, DIV(error, _class='error')) if error else ul))
 
     # Replace 'Add Record' button text
     addspan = grid.element(_title='Add record to database')

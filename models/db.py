@@ -33,10 +33,11 @@ if not request.env.web2py_runtime_gae:
     db = DAL(configuration.get('db.uri'),
             pool_size=configuration.get('db.pool_size'),
             migrate_enabled=True,
-            lazy_tables=False,
-            migrate=True,
-            auto_import=True,
-            check_reserved=['all'])
+            lazy_tables=True,
+            # migrate=True,
+            # auto_import=True,
+            # check_reserved=['all']
+        )
 else:
     # ---------------------------------------------------------------------
     # connect to Google BigTable (optional 'google:datastore://namespace')
@@ -148,21 +149,40 @@ response.formstyle = formstyle_bulma
 # host names must be a list of allowed host names (glob syntax allowed)
 auth = Auth(db, host_names=configuration.get('host.names'))
 
+# Define redirects after login & register
+auth.settings.login_next = auth.settings.register_next = URL('default','session')
+
 # -------------------------------------------------------------------------
 # create all tables needed by auth, maybe add a list of extra fields
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = []
 auth.define_tables(username=False, signature=False)
 
+# Add admin account
+if len(db(db.auth_user.email == configuration.get('admin.email')).select()) == 0:
+    admin_user = db.auth_user.insert(
+        password = db.auth_user.password.validate(configuration.get('admin.password'))[0],
+        email = configuration.get('admin.email'),
+        first_name = 'System',
+        last_name = 'Administrator',
+    )
+    admin_group = db.auth_group.insert(
+        role = 'admin',
+    )
+    db.auth_membership.insert(
+        group_id = admin_group.id,
+        user_id = admin_user.id,
+    )
+
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
-mail = auth.settings.mailer
-mail.settings.server = 'logging' if request.is_local else configuration.get('smtp.server')
-mail.settings.sender = configuration.get('smtp.sender')
-mail.settings.login = configuration.get('smtp.login')
-mail.settings.tls = configuration.get('smtp.tls') or False
-mail.settings.ssl = configuration.get('smtp.ssl') or False
+# mail = auth.settings.mailer
+# mail.settings.server = 'logging' if request.is_local else configuration.get('smtp.server')
+# mail.settings.sender = configuration.get('smtp.sender')
+# mail.settings.login = configuration.get('smtp.login')
+# mail.settings.tls = configuration.get('smtp.tls') or False
+# mail.settings.ssl = configuration.get('smtp.ssl') or False
 
 # -------------------------------------------------------------------------
 # configure auth policy
@@ -187,6 +207,6 @@ response.google_analytics_id = configuration.get('google.analytics_id')
 # -------------------------------------------------------------------------
 # maybe use the scheduler
 # -------------------------------------------------------------------------
-if configuration.get('scheduler.enabled'):
-    from gluon.scheduler import Scheduler
-    scheduler = Scheduler(db, heartbeat=configure.get('heartbeat'))
+# if configuration.get('scheduler.enabled'):
+#     from gluon.scheduler import Scheduler
+#     scheduler = Scheduler(db, heartbeat=configure.get('heartbeat'))
