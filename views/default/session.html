@@ -1,16 +1,38 @@
 {{extend 'layout.html'}}
 
-{{block head}}
+{{block page_js}}
+{{if 'session_data' in globals() and session_data:}}
 <script>
-  var TRAIN_URL = "{{=URL('api', 'train_model/{}'.format(session_data.id), user_signature=True)}}";
-  function trainModel(e) {
-    var button = $(e.target);
-    $.get(TRAIN_URL, function(res) {
-      console.log(res);
-      button.next().text('Loading...');
+  var API = {
+    train_model: "{{=URL('api', 'train_model/{}'.format(session_data.id), user_signature=True)}}",
+    training_status: "{{=URL('api', 'training_status/{}'.format(session_data.id), user_signature=True)}}",
+    predict: "{{=URL('api', 'predict/{}'.format(session_data.id), user_signature=True)}}",
+  };
+
+  var $train = $('#train');
+
+  var interval;
+  function update_training_status() {
+    $.get(API.training_status, ({ training }) => {
+      if (training && !interval) interval = setInterval(update_training_status, 1000);
+      else if (!training && interval) clearInterval(interval);
+      $train.attr('disabled', training);
+      $train.text(training ? 'Training...' : 'Train Model');
     });
   }
+  update_training_status();
+
+  function trainModel() {
+    $.get(API.train_model, () => {
+      $train.attr('disabled', true);
+      $train.text('Training...');
+      update_training_status();
+    });
+  }
+  $train.click(trainModel);
+
 </script>
+{{pass}}
 {{end}}
 
 <section class="section">
@@ -29,8 +51,8 @@
     <pre>{{=session_data.description}}</pre>
     <br/>
     <div class="box">
-      <button class="button is-primary" onclick="trainModel(event)">Train Model</button>
-      <span></span>
+      <button class="button is-primary" id="train">Train Model</button>
+      <span id="status"></span>
     </div>
     {{pass}}
     <br/>

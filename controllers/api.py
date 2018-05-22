@@ -1,32 +1,46 @@
-# TODO
 
-# @auth.requires_signature()
-# def load_entries_file():
-#   pass
+def _get_session():
+    session_id = request.args(0)
+    session_record = db.sessions(session_id)
+    if session_record is None or session_record.owner_id != auth.user_id:
+        raise HTTP(403, 'session does not exist or you do not have access')
+    return session_record
 
-# @auth.requires_signature()
-# def add_entry():
-#   session_id = request.vars.session_id
-
-# @auth.requires_signature()
-# def delete_entry():
-#   session_id = request.vars.session_id
-#   entry_id = request.vars.entry_id
-
-# @auth.requires_signature()
-# def get_entries():
-#   pass
-
-# look into CRUD:
-# from gluon.tools import Crud
-
-# def delete_entry():
-#   session_id = request.args(0)
-#   entry_id = request.args(0)
-#   return crud.delete(db.tables[session_id], entry_id)
-
+@auth.requires_login()
 @auth.requires_signature()
 def train_model():
-    session_id = request.args(0)
-    print(session_id)
-    return response.json(dict(test='Hello World!'))
+    session_record = _get_session()
+    session_entries = get_session_table(session_record.id)
+
+    session_record.update_record(training=True)
+
+    def save_model(model_bin, db, record):
+        record.update_record(model=model_bin, training=False)
+        db.commit()
+
+    # ml.train(db(session_entries).select(), save_model, args=[db, session_record])
+
+    # TEMP for testing
+    return response.json(dict(data=db(session_entries).select()))
+
+
+@auth.requires_login()
+@auth.requires_signature()
+def training_status():
+    session_record = _get_session()
+    return response.json(dict(training=session_record.training))
+
+
+@auth.requires_login()
+@auth.requires_signature()
+def predict():
+    session_record = _get_session()
+
+    for label in session_record.labels:
+        if label not in request.vars:
+            raise HTTP(400, 'Must provide all session labels')
+
+    prediction = None
+    # prediction = ml.predict(session_record.model, request.vars)
+
+    return response.json(dict(prediction=prediction))
