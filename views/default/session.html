@@ -1,28 +1,37 @@
 {{extend 'layout.html'}}
 
+{{block head}}
+<script>
+  var TRAIN_URL = "{{=URL('api', 'train_model/{}'.format(session_data.id), user_signature=True)}}";
+  function trainModel(e) {
+    var button = $(e.target);
+    $.get(TRAIN_URL, function(res) {
+      console.log(res);
+      button.next().text('Loading...');
+    });
+  }
+</script>
+{{end}}
+
 <section class="section">
   <div class="container">
     <h1 class="is-size-1">{{=title}}</h1>
-    {{if len(crumbs) > 1:}}
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        {{for crumb in crumbs[:-1]:}}
-        <li><a href="{{=crumb[1]}}">{{=crumb[0]}}</a></li>
-        {{pass}}
-        <li class="is-active"><a href="{{=crumbs[-1][1]}}" aria-current="page">{{=crumbs[-1][0]}}</a></li>
-      </ul>
-    </nav>
-    {{pass}}
-    {{if 'description' in globals() and description:}}
+    {{include 'breadcrumbs.html'}}
+    {{if 'session_data' in globals() and session_data:}}
     <!-- <div class="card">
       <header class="card-header">
         <p class="card-header-title">Description</p>
       </header>
       <div class="card-content">
-        {{=description}}
+        {{=session_data.description}}
       </div>
     </div> -->
-    <pre>{{=description}}</pre>
+    <pre>{{=session_data.description}}</pre>
+    <br/>
+    <div class="box">
+      <button class="button is-primary" onclick="trainModel(event)">Train Model</button>
+      <span></span>
+    </div>
     {{pass}}
     <br/>
     
@@ -36,7 +45,7 @@
     <h2 class="is-size-2">Analytics</h2>
     {{=analytics}}
     <br/>
-    <a class="button" href="{{=URL('default', 'session/%s/calculate' % request.args(0))}}">Calculator</a>
+    <a class="button" href="{{=URL('default', 'session/%s/predict' % request.args(0))}}">Predict</a>
   </div>
 </section>
 {{pass}}

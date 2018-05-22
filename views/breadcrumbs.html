@@ -1,0 +1,10 @@
+{{if 'crumbs' in globals() and crumbs and len(crumbs) > 1:}}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    {{for crumb in crumbs[:-1]:}}
+    <li><a href="{{=crumb[1]}}">{{=crumb[0]}}</a></li>
+    {{pass}}
+    <li class="is-active"><a href="{{=crumbs[-1][1]}}" aria-current="page">{{=crumbs[-1][0]}}</a></li>
+  </ul>
+</nav>
+{{pass}}

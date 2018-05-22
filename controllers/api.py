@@ -24,3 +24,9 @@
 #   session_id = request.args(0)
 #   entry_id = request.args(0)
 #   return crud.delete(db.tables[session_id], entry_id)
+
+@auth.requires_signature()
+def train_model():
+    session_id = request.args(0)
+    print(session_id)
+    return response.json(dict(test='Hello World!'))

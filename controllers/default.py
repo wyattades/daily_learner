@@ -89,9 +89,9 @@ def _view_session(session_record):
     title = session_record.name
 
     # Calculate page
-    if action == 'calculate':
-        crumbs.append(('Calculator', ''))
-        return dict(grid='Placeholder', title='Calculator', crumbs=crumbs)
+    if action == 'predict':
+        crumbs.append(('Predict', ''))
+        return dict(grid='Placeholder', title='Predict', crumbs=crumbs)
         
     grid = SQLFORM.grid(table,
         args=[session_record.id],
@@ -110,7 +110,7 @@ def _view_session(session_record):
         crumbs.append(('New', ''))
         title = 'New Record'
 
-    return dict(grid=grid, crumbs=crumbs, title=title, description=not action and session_record.description,
+    return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record,
                 analytics=not action and DIV('Placeholder'))
 
 @auth.requires_login()
