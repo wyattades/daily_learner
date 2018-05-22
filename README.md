@@ -21,7 +21,8 @@ routes_in = [
   ('/admin/$anything', '/admin/$anything'),
   ('/$app/static/$anything', '/$app/static/$anything'),
   ('/$app/error/$anything', '/$app/error/$anything'),
-  ('/$anything', '/daily_learner/default/$anything')
+  ('/$app/api/$anything', '/$app/api/$anything'),
+  ('/$anything', '/daily_learner/default/$anything'),
 ]
 routes_out = [ (x, y) for (y, x) in routes_in[2:] ]
 ```
@@ -39,4 +40,3 @@ To start a headless production server, go to the root `web2py` folder then run `
 
 ## TODO
 - move session to its own controller
-- make a new db table for every session, will make a lot of hacky code unnecessary
