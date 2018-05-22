@@ -4,10 +4,9 @@ A webapp for entering arbitrary data in a way that's accessible to anyone. Easil
 
 ## Setup
 
-1. This project requires that you download [web2py](http://www.web2py.com/init/default/download), then add this project to the `web2py` `applications` folder.
-2. Install Node version 8 and up
-2. `$ npm install`
-3. `$ npm install -g gulp-cli`
+1. This project requires that you download [web2py](http://www.web2py.com/init/default/download), then add this project to the `web2py/applications` folder.
+2. Install [node.js](https://nodejs.org/en/download/) version 8 and up
+3. `$ npm install`
 
 To set this project as `web2py`'s default _and_ shorten all URLs, create a `routes.py` file in the `web2py` folder with the following content:
 ```python
@@ -27,16 +26,12 @@ routes_in = [
 routes_out = [ (x, y) for (y, x) in routes_in[2:] ]
 ```
 
-
 ## Development
 
-Run `$ gulp dev` to start the web2py server and live-compile Sass files.
+Run `$ npm run dev` to start the web2py server and live-compile Sass files.
 
 Then visit `localhost:8000` to view the Daily Learner website.
 
 ## Production
 
 To start a headless production server, go to the root `web2py` folder then run `python web2py.py -a <password>`.
-
-## TODO
-- move session to its own controller

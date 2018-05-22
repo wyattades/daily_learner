@@ -29,7 +29,6 @@ gulp.task('watch', function() {
   gulp.watch('static/scss/*.scss', ['sass']);
 });
 
-
 gulp.task('dev', ['sass', 'watch', 'web2py']);
 
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['dev']);
