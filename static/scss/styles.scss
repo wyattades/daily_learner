@@ -21,6 +21,10 @@ main.main-content {
   }
 }
 
+.is-displaynone {
+  display: none;
+}
+
 // Fix more button spacing
 .control > .button + .button {
   margin-left: 16px;
@@ -31,11 +35,21 @@ main.main-content {
   margin-right: 8px;
 }
 
-// Fixed notification position
-.notification {
+// Flash position
+.flash {
   margin: 0 !important;
   position: fixed;
   bottom: 32px;
   right: 32px;
   width: 400px;
+}
+
+// Fix file-input `required` notification
+.file-input {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  left: 50%;
+  top: unset;
+  bottom: 0;
 }

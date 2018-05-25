@@ -6432,15 +6432,26 @@ main.main-content {
   .row_buttons > :not(:last-child) {
     margin-right: 16px; }
 
+.is-displaynone {
+  display: none; }
+
 .control > .button + .button {
   margin-left: 16px; }
 
 .button > .fas:first-child {
   margin-right: 8px; }
 
-.notification {
+.flash {
   margin: 0 !important;
   position: fixed;
   bottom: 32px;
   right: 32px;
   width: 400px; }
+
+.file-input {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  left: 50%;
+  top: unset;
+  bottom: 0; }

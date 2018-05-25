@@ -1,0 +1,59 @@
+{{extend 'layout.html'}}
+
+<section class="section">
+  <div class="container">
+    <h1 class="is-size-1">{{=title}}</h1>
+    {{include 'breadcrumbs.html'}}
+    
+    <div class="content">
+      <p>Import a set of records to add to this session. Each record must exactly contain values for the following labels:</p>
+      <ul>
+        {{ for label in labels: }}
+        <li><strong>{{=label}}</strong></li>
+        {{ pass }}
+      </ul>
+      <h3>Examples</h3>
+      <div class="columns">
+        <div class="column">
+          <h5>JSON</h5>
+          <pre><code>
+[
+  { {{ =', '.join([ '"{}": 0.12'.format(label) for label in labels ]) }} }
+  { {{ =', '.join([ '"{}": 0.56'.format(label) for label in labels ]) }} }
+]
+          </code></pre>
+        </div>
+        <div class="column">
+          <h5>CSV</h5>
+          <pre><code>
+{{ =','.join(labels) }}
+{{ =','.join([ '0.12' for _ in labels ]) }}
+{{ =','.join([ '0.56' for _ in labels ]) }}
+          </code></pre>
+        </div>
+      </div>
+    </div>
+
+    <form action="#" enctype="multipart/form-data" method="post">
+      <div class="field">
+        <div class="file has-name">
+          <label class="file-label">
+            <input accept=".json,.csv" class="file-input" name="file" required="required" type="file">
+            <span class="file-cta">
+              <span class="file-icon"><i class="fas fa-upload"></i></span>
+              <span class="file-label">Choose a file...</span>
+            </span>
+            <span class="file-name">No file selected</span>
+          </label>
+        </div>
+        <div class="help">The accepted file types are JSON and CSV</div>
+      </div>
+      {{ if form.errors.file: }}
+      <div class="error_wrapper"><div class="error">{{=form.errors.file}}</div></div>
+      {{ pass }}
+      <button class="button is-success" type="submit">Import</button>
+      <input name="_formname" type="hidden" value="{{=form.formname}}">
+      <input name="_formkey" type="hidden" value="{{=form.formkey}}">
+    </form>
+  </div>
+</section>

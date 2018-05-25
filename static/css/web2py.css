@@ -261,10 +261,10 @@ div.error {
 /*Fix firefox problem*/
 .web2py_table {clear:both; display:block}
 
-.web2py_paginator {
+.web2py_paginator { /* MINE */
     padding:5px;
-    text-align:right;
-    background-color:#f2f2f2;
+    text-align:center;
+    /* background-color:#f2f2f2; */
 
 }
 .web2py_paginator ul {
@@ -299,9 +299,9 @@ li.w2p_grid_breadcrumb_elem {
 
 
 #wiki_page_body {
-   width: 600px;
-   height: auto;
-   min-height: 400px;
+    width: 600px;
+    height: auto;
+    min-height: 400px;
 }
 
 table.table, .table table {
@@ -310,10 +310,10 @@ table.table, .table table {
 
 /* fix some IE problems */
 
-.ie-lte7 .topbar .container {z-index:2}
-.ie-lte8 div.w2p_flash{ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#222222', endColorstr='#000000', GradientType=0 ); }
-.ie-lte8 div.w2p_flash:hover {filter:alpha(opacity=25);}
-.ie9 #w2p_query_panel {padding-bottom:2px}
+/* .ie-lte7 .topbar .container {z-index:2} */
+/* .ie-lte8 div.w2p_flash{ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#222222', endColorstr='#000000', GradientType=0 ); } */
+/* .ie-lte8 div.w2p_flash:hover {filter:alpha(opacity=25);} */
+/* .ie9 #w2p_query_panel {padding-bottom:2px} */
 
 .web2py_console .form-control {width: 20%; display: inline;}
 .web2py_console #w2p_keywords {width: 50%;}

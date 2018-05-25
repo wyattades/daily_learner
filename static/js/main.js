@@ -19,3 +19,11 @@ $('.notification')
   $(this).remove();
 });
 
+// File uploads
+
+$('.file-input').change(function(e){
+  var file = e.target;
+  if (file.files.length > 0) {
+    $(file).next().next().text(file.files[0].name);
+  }
+});

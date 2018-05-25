@@ -10,13 +10,14 @@
   };
 
   var $train = $('#train');
+  var $disabled = $('.training-disabled');
 
   var interval;
   function update_training_status() {
     $.get(API.training_status, ({ training }) => {
       if (training && !interval) interval = setInterval(update_training_status, 1000);
       else if (!training && interval) clearInterval(interval);
-      $train.attr('disabled', training);
+      $disabled.attr('disabled', training);
       $train.text(training ? 'Training...' : 'Train Model');
     });
   }
@@ -24,7 +25,7 @@
 
   function trainModel() {
     $.get(API.train_model, () => {
-      $train.attr('disabled', true);
+      $disabled.attr('disabled', true);
       $train.text('Training...');
       update_training_status();
     });
@@ -38,22 +39,27 @@
 <section class="section">
   <div class="container">
     <h1 class="is-size-1">{{=title}}</h1>
+    {{if 'session_data' in globals() and session_data:}}
+    <a class="button is-pulled-right" href="{{=URL('default', 'session/edit/sessions/{}'.format(session_data.id))}}">
+      <span class="fas fa-edit"></span> <span>Edit Session</span>
+    </a>
+    {{pass}}
     {{include 'breadcrumbs.html'}}
     {{if 'session_data' in globals() and session_data:}}
-    <!-- <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">Description</p>
-      </header>
-      <div class="card-content">
-        {{=session_data.description}}
-      </div>
-    </div> -->
+    {{ if session_data.description: }}
     <pre>{{=session_data.description}}</pre>
+    {{ pass }}
     <br/>
     <div class="box">
-      <button class="button is-primary" id="train">Train Model</button>
-      <span id="status"></span>
+      <p>Blah blah blah machine learning</p><br/>
+      <div class="buttons">
+        <button class="button is-primary training-disabled" id="train">Train Model</button>
+        <button class="button is-warning training-disabled" onclick="window.location.href='{{=URL('default', 'session/{}/predict'.format(session_data.id))}}'">Predict</button>
+      </div>
     </div>
+    <button class="button training-disabled" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
+      <span class="fas fa-upload"></span> <span>Bulk Import</span>
+    </button>
     {{pass}}
     <br/>
     
@@ -61,13 +67,11 @@
   </div>
 </section>
 
-{{ if ('analytics' in globals()) and analytics:}}
+{{ if 'analytics' in globals() and analytics:}}
 <section class="section">
   <div class="container">
     <h2 class="is-size-2">Analytics</h2>
     {{=analytics}}
-    <br/>
-    <a class="button" href="{{=URL('default', 'session/%s/predict' % request.args(0))}}">Predict</a>
   </div>
 </section>
 {{pass}}
