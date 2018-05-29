@@ -59,15 +59,12 @@ class ScikitModel(MLmodel):
         self.__train_results = self.__results[train_test_split:,:]
         self.__test_results = self.__results[:train_test_split,:]
 
-    def load_model(self, pk_file_in):
-        with open(pk_file_in, 'rb') as file:
-            self.__regr = pickle.load(file)
+    def load_model(self, data_frame, weights):
+        self.upload_data(data_frame)
+        self.train()
 
     def save_model(self):
-        pk_filename = self.__name + ".pk1"
-        with open(pk_filename, 'wb') as file:
-            pickle.dump(self.__regr, file)
-        return pk_filename
+        pass
 
 
 def upload_data_test():
@@ -78,8 +75,7 @@ def upload_data_test():
     mse, rs = s.train()
     pk_Model = s.save_model()
     s = ScikitModel("Test")
-    s.upload_data(my_data)
-    s.load_model(pk_Model)
+    s.load_model(my_data,None)
     res = s.predict([9000,9000,9000])
     print(mse)
     print(rs)

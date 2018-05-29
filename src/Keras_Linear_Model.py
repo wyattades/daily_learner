@@ -13,6 +13,7 @@ from numpy import genfromtxt
 from sklearn.metrics import mean_squared_error,  r2_score
 
 
+
 class LinearModel(MLmodel):
 
 
@@ -66,11 +67,18 @@ class LinearModel(MLmodel):
         self.__train_results = self.__results[train_test_split:,:]
         self.__test_results = self.__results[:train_test_split,:]
 
-    def load_model(self, pk_file_in):
-        pass
+    def load_model(self, model, weights):
+        self.__model = model_from_json(json)
+        with open(self.__name + 'blackbox.h5', 'w') as myfile:
+            myfile.write(weights)
+        self.__model.load_weights(self.__name + 'blackbox.h5')
 
     def save_model(self):
-        pass
+        m_json = self.__model.to_json()
+        m_weights = self.__model.save_weights(self.__name + "blackbox.h5")
+        with open(self.__name + 'blackbox.h5', 'r') as myfile:
+            m_weights = myfile.read()
+        return m_weights, m_json
 
 
 def upload_data_test():

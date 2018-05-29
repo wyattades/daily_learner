@@ -41,7 +41,7 @@ class MLmodel(object):
         pass
 
     @abstractmethod
-    def load_model(self, model_string):
+    def load_model(self, weights,json):
         """
 
         :param model_string:
