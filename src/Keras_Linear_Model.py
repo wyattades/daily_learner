@@ -1,14 +1,19 @@
 from MLmodel import MLmodel
 from Exceptions import ToSmallDataSetException
 from Exceptions import IncorrectPredictSizeException
+
 import numpy as np
+np.random.seed(7)
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+from keras import backend
+from keras import optimizers
 from numpy import genfromtxt
-from sklearn import datasets, linear_model
-from sklearn.metrics import mean_squared_error, r2_score
-import pickle
+from sklearn.metrics import mean_squared_error,  r2_score
 
 
-class ScikitModel(MLmodel):
+class LinearModel(MLmodel):
 
 
 
@@ -20,24 +25,26 @@ class ScikitModel(MLmodel):
     __test_results = []
     __num_attributes = 0
     __num_entries = 0
-    __regr = None
+    __model = None
     __name = ""
 
     def __init__(self, name):
         self.__name = name
 
     def train(self):
-        self.__regr = linear_model.LinearRegression()
-        self.__regr.fit(self.__train_data, self.__train_results)
-        test_pred = self.__regr.predict(self.__test_data)
-        return [mean_squared_error(self.__test_results, test_pred),
-                r2_score(self.__test_results, test_pred)]
+        model = Sequential()
+        model.add(Dense(20, activation="linear", input_dim=self.__num_attributes, kernel_initializer="normal"))
+        model.add(Dense(20, activation="linear", kernel_initializer="normal"))
+        model.add(Dense(1, activation="linear", kernel_initializer="normal"))
+        model.compile(loss='mse', optimizer='adam')
+        model.fit(self.__train_data, self.__train_results, epochs=10, batch_size=1000, validation_split=0.3, verbose=1)
+        self.__model = model
+        res = model.predict(self.__test_data)
+        return mean_squared_error(res,self.__test_results),r2_score(res, self.__test_results)
 
     def predict(self, data_in):
-        if(len(data_in) != self.__num_attributes):
-            raise IncorrectPredictSizeException("Error predicting, input size does not match model")
-        res = self.__regr.predict(np.asarray(data_in).reshape(1,-1))
-        return res[0]
+        return self.__model.predict(np.asarray(data_in).reshape(1,-1))
+
 
     def upload_data(self, data_frame):
         if(len(data_frame) < 5):
@@ -60,29 +67,19 @@ class ScikitModel(MLmodel):
         self.__test_results = self.__results[:train_test_split,:]
 
     def load_model(self, pk_file_in):
-        with open(pk_file_in, 'rb') as file:
-            self.__regr = pickle.load(file)
+        pass
 
     def save_model(self):
-        pk_filename = self.__name + ".pk1"
-        with open(pk_filename, 'wb') as file:
-            pickle.dump(self.__regr, file)
-        return pk_filename
+        pass
 
 
 def upload_data_test():
-    s = ScikitModel("Test")
-    DB_LOC = "/mnt/FireCuda/Documents/School/Spring_2018/CMPS183/web2py/applications/project/src/DataSets/AMarch.csv"
+    s = LinearModel("Test")
+    DB_LOC = "/mnt/FireCuda/Documents/School/Spring_2018/CMPS183/Keras_test/venv/prices.csv"
     my_data = genfromtxt(DB_LOC, delimiter=',')[1:,:]
     s.upload_data(my_data)
-    mse, rs = s.train()
-    pk_Model = s.save_model()
-    s = ScikitModel("Test")
-    s.upload_data(my_data)
-    s.load_model(pk_Model)
-    res = s.predict([9000,9000,9000])
-    print(mse)
-    print(rs)
+    print(s.train())
+    res = s.predict([9500,9200,9500])
 upload_data_test()
 
 

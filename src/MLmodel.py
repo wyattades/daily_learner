@@ -24,7 +24,6 @@ class MLmodel(object):
             Trains the model and stores it in the regr class feild
 
         :return:
-        List<float>: A list of all of the coefficents found
         float: Mean Squared Error
         float: R score
         """
