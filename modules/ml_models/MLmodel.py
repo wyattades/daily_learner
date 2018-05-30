@@ -23,7 +23,7 @@ class MLmodel(object):
         """
             Trains the model and stores it in the regr class feild
 
-        :return:
+        :return: dict
         float: Mean Squared Error
         float: R score
         """
@@ -41,11 +41,11 @@ class MLmodel(object):
         pass
 
     @abstractmethod
-    def load_model(self, weights,json):
+    def load_model(self, model_json):
         """
 
-        :param model_string:
-        A string representation of the model found using pickel
+        :param model_json:
+        A json representation of the model
         :return:
         None
         """
@@ -56,6 +56,6 @@ class MLmodel(object):
         """
             saves model using pickel using a string representation
         :return:
-            a string representation of the model
+            a json representation of the model
         """
         pass

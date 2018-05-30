@@ -1,3 +1,6 @@
+import ml_models.Keras_BlackBox_Model
+import ml_models.Keras_Linear_Model
+import ml_models.Scikit_Model
 
 def _get_session():
     session_id = request.args(0)
@@ -14,14 +17,20 @@ def train_model():
 
     session_record.update_record(training=True)
 
-    def save_model(model_bin, db, record):
-        record.update_record(model=model_bin, training=False)
-        db.commit()
+    Model = MODELS[session_record.model_type]
+    if Model is None: raise HTTP(500, 'Invalid model type')
 
-    # ml.train(db(session_entries).select(), save_model, args=[db, session_record])
+    model = Model()
+    model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
+
+    # def save_model(model):
+    #     record.update_record(model=model.save_model(), training=False, stats=model.get_stats())
+    #     db.commit()
+    error = model.train()
+    record.update_record(model=model.save_model(), training=False, stats='{"error":' + error + '}')
 
     # TEMP for testing
-    return response.json(dict(data=db(session_entries).select()))
+    return response.json(dict(training=False))
 
 
 @auth.requires_login()

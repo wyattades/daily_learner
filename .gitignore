@@ -17,6 +17,7 @@ private/
 
 # Other
 .vscode/
+.idea/
 
 # Node
 package-lock.json
