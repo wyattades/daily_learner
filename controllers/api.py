@@ -1,6 +1,4 @@
-import ml_models.Keras_BlackBox_Model
-import ml_models.Keras_Linear_Model
-import ml_models.Scikit_Model
+from ml_models import MODELS, rows_to_dataframe
 
 def _get_session():
     session_id = request.args(0)
@@ -26,11 +24,10 @@ def train_model():
     # def save_model(model):
     #     record.update_record(model=model.save_model(), training=False, stats=model.get_stats())
     #     db.commit()
-    error = model.train()
-    record.update_record(model=model.save_model(), training=False, stats='{"error":' + error + '}')
+    stats = model.train()
+    session_record.update_record(model=model.save_model(), training=False, stats=stats)
 
-    # TEMP for testing
-    return response.json(dict(training=False))
+    return response.json(dict(stats=stats, training=False))
 
 
 @auth.requires_login()

@@ -100,7 +100,7 @@ def formstyle_bulma(form, fields):
                                 _class='%s %s' % (offset_class, col_class))
                 label = ''
             elif isinstance(controls, SELECT):
-                controls.add_class('select')
+                _controls.components[0] = DIV(controls, _class='select')
             elif isinstance(controls, TEXTAREA):
                 controls.add_class('textarea')
 

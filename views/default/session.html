@@ -24,13 +24,20 @@
   update_training_status();
 
   function trainModel() {
-    $.get(API.train_model, () => {
+    $.get(API.train_model, ({ stats, training }) => {
+      console.log(stats, training);
       $disabled.attr('disabled', true);
       $train.text('Training...');
       update_training_status();
     });
   }
   $train.click(trainModel);
+
+  function predict() {
+    $.get(API.predict, {}, () => {
+
+    });
+  }
 
 </script>
 {{pass}}
@@ -57,11 +64,10 @@
         <button class="button is-warning training-disabled" onclick="window.location.href='{{=URL('default', 'session/{}/predict'.format(session_data.id))}}'">Predict</button>
       </div>
     </div>
-    <button class="button training-disabled" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
+    <button class="button training-disabled" style="float:left;margin-right:16px" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
       <span class="fas fa-upload"></span> <span>Bulk Import</span>
     </button>
     {{pass}}
-    <br/>
     
     {{=grid}}
   </div>

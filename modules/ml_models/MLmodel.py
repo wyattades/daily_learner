@@ -41,11 +41,11 @@ class MLmodel(object):
         pass
 
     @abstractmethod
-    def load_model(self, model_json):
+    def load_model(self, model_bin):
         """
 
-        :param model_json:
-        A json representation of the model
+        :param model_bin:
+        A binary (pickle) representation of the model
         :return:
         None
         """

@@ -2,7 +2,6 @@ import json
 import csv
 
 def _check_rows(labels, rows):
-  print(rows)
   for row in rows:
     for label in labels:
       val = row[label]

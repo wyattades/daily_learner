@@ -1,3 +1,4 @@
+from ml_models import MODELS
 
 def _format_date(value, row):
   if value is not None: return value.strftime('%d/%m/%Y %H:%M')
@@ -14,7 +15,8 @@ db.define_table('sessions',
   Field('labels', 'list:string', requires=IS_LIST_OF(LABEL_REQUIRES, minimum=2, maximum=16)),
   Field('result_label', 'string', requires=LABEL_REQUIRES),
   Field('training', 'boolean', default=False, readable=False, writable=False),
-  Field('model', 'json', default=None, readable=False, writable=False),
+  Field('model_type', 'string', length=48, requires=IS_IN_SET([ (model, model) for model in MODELS ]), default='LinearModel'),
+  Field('model', 'blob', readable=False, writable=False),
   Field('stats', 'json', default='{}', readable=False, writable=False),
   singular='Session',
   plural='Sessions',
@@ -39,8 +41,8 @@ def define_session_table(key, labels, result_label):
   table.plural = 'Entries'
 
 # We have to define all session databases on every request
-for session in db(db.sessions).select():
-  define_session_table('session_{}'.format(session.id), session.labels, session.result_label)
+for sess in db(db.sessions).select():
+  define_session_table('session_{}'.format(sess.id), sess.labels, sess.result_label)
 
 def get_session_table(id):
   key = 'session_{}'.format(id)

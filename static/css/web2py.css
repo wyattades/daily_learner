@@ -294,8 +294,8 @@ li.w2p_grid_breadcrumb_elem {
     margin-bottom: 16px;
 }
 .web2py_console form { vertical-align: middle; }
-.web2py_console input, .web2py_console select,
-.web2py_console a { margin: 2px; }
+/* .web2py_console input, .web2py_console select,
+.web2py_console a { margin: 2px; } */
 
 
 #wiki_page_body {

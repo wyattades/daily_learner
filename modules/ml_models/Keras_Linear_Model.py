@@ -2,7 +2,7 @@ from MLmodel import MLmodel
 from Exceptions import ToSmallDataSetException
 from Exceptions import IncorrectPredictSizeException
 
-import json
+import pickle
 from keras.models import Sequential, Model
 from keras.layers import Dense
 from keras import backend, optimizers
@@ -23,10 +23,11 @@ class LinearModel(MLmodel):
     __num_attributes = 0
     __num_entries = 0
     __model = None
-    __name = ""
+    # __name = ""
 
-    def __init__(self, name):
-        self.__name = name
+    def __init__(self):
+        # self.__name = name
+        pass
 
     def train(self):
         model = Sequential()
@@ -63,8 +64,8 @@ class LinearModel(MLmodel):
         self.__train_results = self.__results[train_test_split:,:]
         self.__test_results = self.__results[:train_test_split,:]
 
-    def load_model(self, model_json):
-        model_data = json.loads(model_json)
+    def load_model(self, model_bin):
+        model_data = pickle.loads(model_bin)
         self.__model = Model.from_config(model_data.model)
         self.__model.set_weights(np.array(model_data.weights))
         # with open(self.__name + 'blackbox.h5', 'w') as myfile:
@@ -74,7 +75,7 @@ class LinearModel(MLmodel):
     def save_model(self):
         m_model = self.__model.get_config()
         m_weights = self.__model.get_weights()
-        return json.dumps(dict(model=m_model, weights=m_weights))
+        return pickle.dumps(dict(model=m_model, weights=m_weights))
         # m_weights = self.__model.save_weights(self.__name + "blackbox.h5")
         # with open(self.__name + 'blackbox.h5', 'r') as myfile:
         #     m_weights = myfile.read()

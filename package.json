@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "gulp"
+    "dev": "gulp",
+    "setup": "python2 -m pip install numpy sklearn keras tensorflow"
   },
   "dependencies": {
     "bulma": "^0.7.1"

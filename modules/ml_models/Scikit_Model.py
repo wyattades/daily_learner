@@ -19,10 +19,11 @@ class ScikitModel(MLmodel):
     __num_attributes = 0
     __num_entries = 0
     __regr = None
-    __name = ""
+    # __name = ""
 
-    def __init__(self, name):
-        self.__name = name
+    def __init__(self):
+        # self.__name = name
+        pass
 
     def train(self):
         self.__regr = linear_model.LinearRegression()
@@ -56,7 +57,7 @@ class ScikitModel(MLmodel):
         self.__train_results = self.__results[train_test_split:,:]
         self.__test_results = self.__results[:train_test_split,:]
 
-    def load_model(self, model_json):
+    def load_model(self, model_bin):
         pass
 
     def save_model(self):

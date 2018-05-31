@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from gluon.sqlhtml import ExporterCSV, ExporterJSON
 from import_parser import get_parser
-from pprint import pprint
+
+
+# Save global `session` as `user_session`
+user_session = session
 
 export_formats = dict(
     csv_with_hidden_cols=False,
@@ -114,7 +115,6 @@ def _view_session(session_record):
         )
 
         def validate(data_import):
-            print('validatin')
             filedata = data_import.vars.file
             parser = get_parser(filedata.type)
             if parser:
@@ -122,7 +122,7 @@ def _view_session(session_record):
                     rows = parser(labels, filedata.file)
                     if rows:
                         table.bulk_insert(rows)
-                        session.flash = 'Successfully imported {} entries'.format(len(rows))
+                        user_session.flash = 'Successfully imported {} entries'.format(len(rows))
                     else:
                         data_import.errors.file = 'Invalid labels/values provided'
                 except Exception as e:
@@ -131,17 +131,16 @@ def _view_session(session_record):
             else:
                 data_import.errors.file = 'Unsupported filetype: ' + filedata.type
 
-        if data_import.process(
+        data_import.process(
             formname='import',
             onvalidation=validate,
             onsuccess=None,
             onfailure=None,
             next=URL('default', 'session/{}'.format(session_record.id)),
-        ).accepted:
-            print('form accepted!')
+        )
 
         return dict(labels=labels, title='Import', crumbs=crumbs, form=data_import)
-        
+
     grid = SQLFORM.grid(table,
         args=[session_record.id],
         exportclasses=export_formats,
@@ -162,7 +161,7 @@ def _view_session(session_record):
 
     return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record,
                 analytics=not action and DIV('Placeholder'))
-
+    
 @auth.requires_login()
 def session():
     session_id = request.args(0)
@@ -174,6 +173,9 @@ def session():
         if session_record == None or session_record.owner_id != auth.user_id:
             raise HTTP(403)
         return _view_session(session_record)
+
+    def _do(form):
+        print(form.__dict__)
 
     # Create sessions grid
     query = (db.sessions.owner_id == auth.user_id)
