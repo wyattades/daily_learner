@@ -1,10 +1,44 @@
 {{extend 'layout.html'}}
 
+{{block head}}
+<script src="{{=URL('static', 'js/particles.min.js')}}"></script>
+{{end}}
 
-<section class="hero is-primary is-medium is-bold">
+{{block page_js}}
+<script>
+  particlesJS('particles', {
+    particles: {
+      size: {
+        value: 3,
+        random: true,
+      },
+      opacity: {
+        value: 0.3,
+      },
+      line_linked: {
+        opacity: 0.2,
+      },
+      number: {
+        value: 120,
+        density: {
+          enable: true,
+          value_area: 800,
+        },
+      },
+      move: {
+        out_mode: 'out',
+        speed: 1,
+      },
+    },
+  });
+</script>
+{{end}}
+
+
+<section class="hero is-primary is-large is-bold" id="particles">
   <div class="hero-body">
     <div class="container">
-      <h1 class="title">Daily Learner</h1>
+      <h1 class="title is-size-1">Daily Learner</h1>
       <p class="subtitle">Learn stuff about stuff</p>
     </div>
   </div>

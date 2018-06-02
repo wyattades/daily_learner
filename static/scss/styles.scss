@@ -13,6 +13,11 @@ main.main-content {
   flex: 1;
 }
 
+// Navbar shadow transition
+.navbar {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
 // Web2py's button row
 .row_buttons {
   text-align: right;
@@ -52,4 +57,28 @@ main.main-content {
   left: 50%;
   top: unset;
   bottom: 0;
+}
+
+// Particles background
+#particles {
+  position: relative;
+
+  // :first-child {
+  //   z-index: 1;
+  // }
+
+  .particles-js-canvas-el {
+    position: absolute;
+    // z-index: 0;
+  }
+}
+
+.hero.is-primary {
+  text-shadow: -1px 5px 6px rgba(0,0,0,0.1), 10px 5px 5px rgba(0,0,0,0.1), -10px 5px 5px rgba(0,0,0,0.05);
+  &.is-bold {
+    $color: $primary;
+    $gradient-middle: darken(saturate(adjust-hue($color, 10deg), 10%), 10%);
+    $gradient-bottom: darken(saturate(adjust-hue($color, 30deg), 15%), 20%);
+    background: linear-gradient(180deg, $color 20%, $gradient-middle 60%, $gradient-bottom 100%);
+  }
 }

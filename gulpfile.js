@@ -20,6 +20,7 @@ gulp.task('sass', function() {
   return gulp.src('static/scss/styles.scss')
     .pipe(sass({
       includePaths: ['node_modules'],
+      outputStyle: 'compressed',
     }).on('error', sass.logError))
     .pipe(gulp.dest('static/css'));
 });

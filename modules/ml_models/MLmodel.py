@@ -1,9 +1,16 @@
 from abc import ABCMeta, abstractmethod
-
+import pickle
+import numpy as np
+from keras.models import Model
 
 class MLmodel(object):
 
     __metaclass__ = ABCMeta
+    
+    __model = None
+
+    def __init__(self):
+        pass
 
     @abstractmethod
     def upload_data(self, data_frame):
@@ -59,3 +66,4 @@ class MLmodel(object):
             a json representation of the model
         """
         pass
+        

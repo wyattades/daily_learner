@@ -19,11 +19,6 @@ class ScikitModel(MLmodel):
     __num_attributes = 0
     __num_entries = 0
     __regr = None
-    # __name = ""
-
-    def __init__(self):
-        # self.__name = name
-        pass
 
     def train(self):
         self.__regr = linear_model.LinearRegression()

@@ -100,6 +100,10 @@ def formstyle_bulma(form, fields):
                                 _class='%s %s' % (offset_class, col_class))
                 label = ''
             elif isinstance(controls, SELECT):
+                first_option = controls.components[0]
+                if first_option['_value'] == '':
+                    first_option.append('Select {}'.format(label.components[0]))
+                    first_option['_disabled'] = True
                 _controls.components[0] = DIV(controls, _class='select')
             elif isinstance(controls, TEXTAREA):
                 controls.add_class('textarea')
@@ -117,7 +121,7 @@ def formstyle_bulma(form, fields):
         elif isinstance(controls, CAT) and isinstance(controls[0], INPUT):
                 controls[0].add_class('control')
         if isinstance(label, LABEL):
-            label.add_class('label %s' % label_col_class)
+            label.add_class('label {}'.format(label_col_class))
 
         parent.append(DIV(label, _controls, _class='field', _id=id))
     return parent

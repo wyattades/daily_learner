@@ -96,10 +96,18 @@ def _view_session(session_record):
     ]
     title = session_record.name
 
-    # Calculate page
+    # Predict page
     if action == 'predict':
         crumbs.append(('Predict', ''))
-        return dict(grid='Placeholder', title='Predict', crumbs=crumbs)
+
+        form = SQLFORM(table)
+        form['_onsubmit'] = 'return predict(event, "{}")'.format(URL('api', 'predict/{}'.format(session_record.id), user_signature=True))
+        form.element('.field', replace=None)
+        submit = form.element('button')
+        submit.add_class('is-warning is-medium')
+        submit.components[0] = 'Predict'
+
+        return dict(grid=CAT(form, BR(), DIV('Result: ', SPAN('NA', _id='output'), _class='notification')), title='Predict', crumbs=crumbs)
 
     # Data upload page
     if action == 'import':
@@ -111,7 +119,7 @@ def _view_session(session_record):
         response.view = 'default/import.html'
 
         data_import = FORM(
-            INPUT(_type='file', _name='file', _required=True, _class='file-input', _accept=".json,.csv"),
+            INPUT(_type='file', _name='file', _required=True, _class='file-input', _accept='.json,.csv'),
         )
 
         def validate(data_import):
@@ -159,8 +167,7 @@ def _view_session(session_record):
         crumbs.append(('New', ''))
         title = 'New Record'
 
-    return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record,
-                analytics=not action and DIV('Placeholder'))
+    return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record)
     
 @auth.requires_login()
 def session():
@@ -174,9 +181,6 @@ def session():
             raise HTTP(403)
         return _view_session(session_record)
 
-    def _do(form):
-        print(form.__dict__)
-
     # Create sessions grid
     query = (db.sessions.owner_id == auth.user_id)
     tl = db.sessions
@@ -184,8 +188,10 @@ def session():
         csv=False,
         ui=ui,
         searchable=False,
+        onvalidation=check_unique_labels,
         oncreate=lambda form: create_session_table(form.vars),
         ondelete=lambda table,id: drop_session_table(id),
+        editargs=dict(fields=['name', 'description', 'created_on', 'model_type']),
         _class='table',
         details=False,
         fields = [tl.name, tl.description, tl.created_on],
@@ -194,8 +200,27 @@ def session():
         links_placement='left',
     )
 
-    # Fix form formatting in create_form
-    if grid.create_form is not None:
+    # Remove 'records found' message
+    grid.element('.web2py_counter', replace=None)
+
+    # 
+    norecords = grid.element('.web2py_table')
+    if norecords:
+        content = norecords.components[0]
+        if content and not content['_class']:
+            norecords.components[0] = CAT(BR(), DIV(
+                P('You currently have no machine learning sessions.'),
+                P('Create a new one with the button above!'),
+                _class='notification is-warning is-inline-block',
+            ))
+
+    # Replace 'Add Record' button text
+    addspan = grid.element(_title='Add record to database')
+    if addspan: addspan[0] = addspan['_title'] = 'New Session'
+
+    crumbs = None
+    if grid.create_form:
+        # Fix form formatting in create_form
         error = grid.create_form.errors.labels
         grid.create_form.errors.labels = None
         def replace_li(li):
@@ -207,29 +232,18 @@ def session():
         grid.create_form.elements('ul li', replace=replace_li)
         grid.create_form.elements('ul', replace=lambda ul: (CAT(ul, DIV(error, _class='error')) if error else ul))
 
-    # Replace 'Add Record' button text
-    addspan = grid.element(_title='Add record to database')
-    if addspan: addspan[0] = addspan['_title'] = 'New Session'
-
-    # Remove 'records found' message
-    grid.element('.web2py_counter', replace=None)
-
-    # Set title
-    crumbs = None
-    if grid.create_form:
         title = 'New Session'
         crumbs = [
             ('Sessions', URL('default', 'session')),
             ('New', ''),
         ]
     elif grid.update_form:
-        session_record = grid.update_form.record
+        grid.element('.form_header .is-primary', replace=None)
+
         title = 'Edit Session'
-        grid.element('#sessions_labels__row').add_class('is-displaynone')
-        grid.element('#sessions_result_label__row').add_class('is-displaynone')
         crumbs = [
             ('Sessions', URL('default', 'session')),
-            (session_record.name, URL('default', 'session/%d' % session_record.id)),
+            (session_record.name, URL('default', 'session/%d' % grid.update_form.record.id)),
             ('Edit', ''),
         ]
     else:

@@ -5,7 +5,7 @@
     <div class="container">
       <h1 class="title">{{=status}} Error</h1>
       <p class="subtitle">{{=message}}</p>
-      {{if ticket != 'None':}}
+      {{if ticket != 'None' and ticket is not None:}}
         <p>Ticket: <a href="{{=URL('admin', 'default', 'ticket', args=[ticket])}}">{{=ticket}}</a></p>
       {{pass}}
     </div>

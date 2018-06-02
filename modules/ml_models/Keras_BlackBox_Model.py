@@ -12,6 +12,7 @@ import numpy as np
 from numpy import genfromtxt
 np.random.seed(7)
 
+
 class BlackBoxModel(MLmodel):
 
     __data = []
@@ -27,11 +28,6 @@ class BlackBoxModel(MLmodel):
     __num_attributes = 0
     __num_entries = 0
     __model = None
-    # __name = ""
-
-    def __init__(self):
-        # self.__name = name
-        pass
 
     def train(self):
         model = Sequential()

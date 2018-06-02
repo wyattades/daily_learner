@@ -17,19 +17,32 @@ db.define_table('sessions',
   Field('training', 'boolean', default=False, readable=False, writable=False),
   Field('model_type', 'string', length=48, requires=IS_IN_SET([ (model, model) for model in MODELS ]), default='LinearModel'),
   Field('model', 'blob', readable=False, writable=False),
-  Field('stats', 'json', default='{}', readable=False, writable=False),
+  Field('stats', 'json', readable=False, writable=False),
+  Field('last_trained', 'datetime', represent=_format_date, readable=False, writable=False),
   singular='Session',
   plural='Sessions',
 )
 db.sessions.id.set_attributes(readable=False, writable=False)
 
+def check_unique_labels(form):
+  # Only run this function when creating session
+  if not form.vars.labels or not form.vars.result_label: return
+
+  labels = form.vars.labels + [form.vars.result_label]
+  unique = set()
+  for label in labels:
+      if label in unique:
+          form.errors.result_label = 'All labels must be unique'
+          return False
+      unique.add(label)
+  return True
 
 def define_session_table(key, labels, result_label):
   fields = [
-    Field(label, 'double', rname='"label_%d"' % index, requires=IS_FLOAT_IN_RANGE(0.0, 1.0))
+    Field(label, 'double', rname='"label_%d"' % index)
     for index, label in enumerate(labels)
   ]
-  fields.append(Field(result_label, 'double', rname='"result_label"', requires=IS_FLOAT_IN_RANGE(0.0, 1.0)))
+  fields.append(Field(result_label, 'double', rname='"result_label"'))
   db.define_table(key,
     Field('created_on', 'datetime', default=request.now, represent=_format_date, readable=True, writable=False),
     Field('updated_on', 'datetime', update=request.now, represent=_format_date, readable=False, writable=False),
@@ -41,6 +54,7 @@ def define_session_table(key, labels, result_label):
   table.plural = 'Entries'
 
 # We have to define all session databases on every request
+# TODO: probably better way to do this i.e. without db call every request
 for sess in db(db.sessions).select():
   define_session_table('session_{}'.format(sess.id), sess.labels, sess.result_label)
 

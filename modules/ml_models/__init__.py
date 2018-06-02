@@ -1,6 +1,7 @@
 from .Keras_BlackBox_Model import BlackBoxModel
 from .Keras_Linear_Model import LinearModel
 from .Scikit_Model import ScikitModel
+from .Exceptions import *
 
 MODELS = {
   'BlackBoxModel': BlackBoxModel,
