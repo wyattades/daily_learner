@@ -24,7 +24,7 @@ routes_in = [
   ('/$app/api/$anything', '/$app/api/$anything'),
   ('/$anything', '/daily_learner/default/$anything'),
 ]
-routes_out = [ (x, y) for (y, x) in routes_in[:-1] ]
+routes_out = [ (x, y) for (y, x) in routes_in[-1:] ]
 ```
 
 ## Development

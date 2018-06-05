@@ -1,6 +1,6 @@
 {{extend 'layout.html'}}
 
-{{block page_js:}}
+{{block page_js}}
 <script>
   var API = {
     predict: "{{=URL('api', 'predict/{}'.format(session_data.id), user_signature=True)}}",
@@ -18,8 +18,7 @@
 
     $.post(API.predict, vals) // Must use post because we're sending data to web2py
     .done(({ prediction }) => {
-      console.log(prediction);
-      $output.text(prediction || 'Unknown');
+      $output.text(typeof prediction === 'number' ? prediction : 'Invalid');
     })
     .fail((res) => console.error(res));
   }
@@ -61,5 +60,5 @@
 
 <div class="field">
   <label class="label">{{=session_data.result_label}} <span class="has-text-grey has-text-weight-normal">(Predicted Result)</span></label>
-  <div class="box" id="output"></div>
+  <div class="box" id="output">...</div>
 </div>

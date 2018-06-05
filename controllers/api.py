@@ -1,4 +1,3 @@
-from ml_models import MODELS, rows_to_dataframe, ToSmallDataSetException, IncorrectPredictSizeException 
 
 def _get_session():
     session_id = request.args(0)
@@ -7,7 +6,7 @@ def _get_session():
         raise HTTP(403, 'session does not exist or you do not have access')
     return session_record
 
-def _create_model(model_type):
+def _create_model(MODELS, model_type):
 
     Model = MODELS[model_type]
     if Model is None: raise HTTP(500, 'Invalid model type')
@@ -17,6 +16,7 @@ def _create_model(model_type):
 @auth.requires_login()
 @auth.requires_signature()
 def train_model():
+    from ml_models import ToSmallDataSetException, rows_to_dataframe, MODELS
 
     session_record = _get_session()
     stats = None
@@ -26,7 +26,7 @@ def train_model():
 
         session_record.update_record(training=True)
 
-        model = _create_model(session_record.model_type)
+        model = _create_model(MODELS, session_record.model_type)
 
         try:
             model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
@@ -58,8 +58,10 @@ def training_status():
 @auth.requires_login()
 @auth.requires_signature()
 def predict():
+    from ml_models import IncorrectPredictSizeException, rows_to_dataframe, MODELS
+
     session_record = _get_session()
-    model = _create_model(session_record.model_type)
+    model = _create_model(MODELS, session_record.model_type)
 
     data_in = []
     for label in session_record.labels:

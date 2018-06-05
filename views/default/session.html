@@ -10,7 +10,7 @@
 
   var $train = $('#train');
   var $predict = $('#predict');
-  var $disabled = $('.training-disabled:not(:disabled)');
+  var $disabled = $('.training-disabled');
   var $stats = $('#stats');
   var $noStats = $('#no-stats');
   var $status = $('#status');
@@ -43,9 +43,13 @@
         $predict.attr('disabled', false);
 
         stats.last_trained = last_trained;
+        console.log(stats);
         for (var key in stats) {
           if (stats.hasOwnProperty(key)) {
-            $stats.find('[data-stats="' + key + '"]').text(typeof stats[key] === 'number' ? stats[key] : 'NA');
+            var stat = stats[key];
+            $stats.find('[data-stats="' + key + '"]').text(
+              (stat === null || stat === undefined) ? 'NA' : stat
+            );
           }
         }
         $stats.show();
@@ -63,8 +67,9 @@
   update_training_status();
 
   function trainModel() {
-    console.log('disableedddd');
+
     $disabled.attr('disabled', true);
+
     $.get(API.train_model)
     .done(() => {
       // $disabled.attr('disabled', true);
