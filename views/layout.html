@@ -33,22 +33,42 @@
     <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
     <!-- Favicons -->
     {{include 'web2py_ajax.html'}} <!-- this includes jquery.js, calendar.js/.css and web2py.js -->
-    {{block head}}{{end}}
+    {{block head}}{{end head}}
   </head>
-  <body class="has-navbar-fixed-top">
+  <body class="has-navbar-fixed-top {{block bodyclass}}{{end bodyclass}}">
     <!-- Navbar ======================================= -->
     {{include 'navbar.html'}}
+
     <main class="main-content">
+      {{=response.toolbar() if configuration.get('app.toolbar') else ''}}
       <!-- Masthead ===================================== -->    
-      {{block header}}
-      {{end}}
+      {{block header}}{{end header}}
       <!-- Main ========================================= -->
       <!-- Begin page content -->
-      {{block center}}
-      {{include}}
-      {{end}}
-      {{=response.toolbar() if configuration.get('app.toolbar') else ''}}
+      <section class="section">
+        <div class="container">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <div>
+                  {{ if 'title' in globals() and title:}}
+                  <h1 class="is-size-1">{{=title}}</h1>
+                  {{pass}}
+                  {{include 'breadcrumbs.html'}}
+                </div>
+              </div>
+            </div>
+            <div class="level-left">
+              <div class="level-item">
+                {{block headerright}}{{end headerright}}
+              </div>
+            </div>
+          </div>
+          {{include}}
+        </div>
+      </section>
     </main>
+
     {{block footer}} <!-- this is default footer -->      
     <footer class="footer">
       <div class="container">
@@ -62,7 +82,7 @@
         </div>
       </div>
     </footer>
-    {{end}}
+    {{end footer}}
 
     <!-- Popup message aka `flash` -->
     {{ if response.flash:}}

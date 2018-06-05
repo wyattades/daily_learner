@@ -1,28 +1,25 @@
 {{extend 'layout.html'}}
 
 
-<section class="section">
-  <div class="container">
-    <div class="columns">
-      <div class="column is-6">
-        <h2 class="is-size-1">
-          {{=T('Sign Up') if request.args(0) == 'register' else T('Log In') if request.args(0) == 'login' else T(request.args(0).replace('_',' ').title())}}
-        </h2>
-        <br/>
-        <div id="web2py_user_form">
-          {{
-          if request.args(0)=='login':
-            if not 'request_reset_password' in auth.settings.actions_disabled:
-              form.add_button(T('Lost Password'),URL(args='request_reset_password'),_class='button')
-            pass
-          pass
-          =form
-          }}
-        </div>
-      </div>
+<div class="columns">
+  <div class="column is-6">
+    <h2 class="is-size-1">
+      {{=T('Sign Up') if request.args(0) == 'register' else T('Log In') if request.args(0) == 'login' else T(request.args(0).replace('_',' ').title())}}
+    </h2>
+    <br/>
+    <div id="web2py_user_form">
+      {{
+      if request.args(0)=='login':
+        if not 'request_reset_password' in auth.settings.actions_disabled:
+          form.add_button(T('Lost Password'),URL(args='request_reset_password'),_class='button')
+        pass
+      pass
+      =form
+      }}
     </div>
   </div>
-</section>
+</div>
+
 
 {{block page_js}}
 <script>

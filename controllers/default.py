@@ -100,14 +100,22 @@ def _view_session(session_record):
     if action == 'predict':
         crumbs.append(('Predict', ''))
 
-        form = SQLFORM(table)
-        form['_onsubmit'] = 'return predict(event, "{}")'.format(URL('api', 'predict/{}'.format(session_record.id), user_signature=True))
-        form.element('.field', replace=None)
-        submit = form.element('button')
-        submit.add_class('is-warning is-medium')
-        submit.components[0] = 'Predict'
+        response.view = 'default/predict.html'
 
-        return dict(grid=CAT(form, BR(), DIV('Result: ', SPAN('NA', _id='output'), _class='notification')), title='Predict', crumbs=crumbs)
+        # form = SQLFORM(table)
+        # print(form)
+        # form['_onsubmit'] = 'return predict(event, "{}")'.format(URL('api', 'predict/{}'.format(session_record.id), user_signature=True))
+        # form.element('.field', replace=None)
+        # submit = form.element('button')
+        # submit.add_class('is-warning is-medium')
+        # submit.components[0] = 'Predict'
+
+        # for el in form.elements('input'):
+        #     el['_type'] = 'number'
+        #     el['_step'] = 0.0001
+            # el['_required'] = True
+
+        return dict(session_data=session_record, title='Predict', crumbs=crumbs)
 
     # Data upload page
     if action == 'import':

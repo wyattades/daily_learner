@@ -74,92 +74,59 @@
 
 </script>
 {{pass}}
-<script>
-
-  var $output = $('#output');
-
-  function predict(e, url) {
-    e.preventDefault();
-
-    var vals = $(e.target).serializeArray().reduce((obj, { name, value }) => {
-      obj[name] = value;
-      return obj;
-    }, {});
-
-    $.post(url, vals) // Must use post because we're sending data to web2py
-    .done(({ prediction }) => {
-      console.log(prediction);
-      $output.text(prediction || 'Unknown');
-    })
-    .fail((res) => console.error);
-  }
-</script>
 {{end}}
 
-<section class="section">
-  <div class="container">
-    <div class="level">
-      <div class="level-left">
-        <div class="level-item">
-          <div>
-            <h1 class="is-size-1">{{=title}}</h1>
-            {{include 'breadcrumbs.html'}}
-          </div>
-        </div>
-      </div>
-      <div class="level-left">
-        <div class="level-item">
-          {{if 'session_data' in globals() and session_data:}}
-          <a class="button is-pulled-right" href="{{=URL('default', 'session/edit/sessions/{}'.format(session_data.id))}}">
-            <span class="fas fa-edit"></span> <span>Edit Session</span>
-          </a>
-          {{pass}}
-        </div>
-      </div>
-    </div>
-    {{if 'session_data' in globals() and session_data:}}
-    {{ if session_data.description: }}
-    <pre>{{=session_data.description}}</pre>
-    <br/>
-    {{ pass }}
-    <div class="box">
-      <p class="is-size-4"><strong>Machine Learning Console</strong></p>
-      <p class="help">
-        You can train your model here by clicking Train. Training times very from instantaneous to 20 seconds.
-        To predict using your model, click Predict.
-      </p>
-      <br/>
-      <p style="margin-bottom: 8px;">
-        <strong>Status:</strong> <span class="has-text-grey" id="status">Pending...</span>
-      </p>
-      <div class="buttons">
-        <button class="button is-primary is-medium training-disabled"
-          id="train" disabled>Train Model</button>
-        <button class="button is-warning is-medium training-disabled"
-          onclick="window.location.href='{{=URL('default', 'session/{}/predict'.format(session_data.id))}}'" 
-          id="predict" disabled>Predict</button>
-      </div>
-      <pre id="stats">
+
+{{block headerright}}
+{{if 'session_data' in globals() and session_data:}}
+<a class="button is-pulled-right" href="{{=URL('default', 'session/edit/sessions/{}'.format(session_data.id))}}">
+  <span class="fas fa-edit"></span> <span>Edit Session</span>
+</a>
+{{pass}}
+{{end headerright}}
+
+
+{{if 'session_data' in globals() and session_data:}}
+{{ if session_data.description: }}
+<pre>{{=session_data.description}}</pre>
+<br/>
+{{ pass }}
+<div class="box">
+  <p class="is-size-4"><strong>Machine Learning Console</strong></p>
+  <p class="help">
+    You can train your model here by clicking Train. Training times very from instantaneous to 20 seconds.
+    To predict using your model, click Predict.
+  </p>
+  <br/>
+  <p style="margin-bottom: 8px;">
+    <strong>Status:</strong> <span class="has-text-grey" id="status">Pending...</span>
+  </p>
+  <div class="buttons">
+    <button class="button is-primary is-medium training-disabled"
+      id="train" disabled>Train Model</button>
+    <button class="button is-warning is-medium training-disabled"
+      onclick="window.location.href='{{=URL('default', 'session/{}/predict'.format(session_data.id))}}'" 
+      id="predict" disabled>Predict</button>
+  </div>
+  <pre id="stats">
 <strong>Last Trained:</strong> <span data-stats="last_trained">Pending...</span>
 
 <strong>Score:</strong> <span data-stats="score">Pending...</span>
 <strong>Mean Squared Error:</strong> <span data-stats="error">Pending...</span>
 </pre>
 <pre id="no-stats" style="display:none">No statistics available</pre>
-    </div>
-    <h3 class="is-size-3">Data</h3>
-    <br/>
-    <button class="button" style="float:left;margin-right:16px" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
-      <span class="fas fa-upload"></span> <span>Bulk Import</span>
-    </button>
-    {{pass}}
-    
-    {{=grid}}
+</div>
+<h3 class="is-size-3">Data</h3>
+<br/>
+<button class="button" style="float:left;margin-right:16px" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
+  <span class="fas fa-upload"></span> <span>Bulk Import</span>
+</button>
+{{pass}}
 
-    <!-- {{ if 'analytics' in globals() and analytics:}}
-      <br/>
-      <h3 class="is-size-3">Analytics</h3>
-      {{=analytics}}
-    {{pass}} -->
-  </div>
-</section>
+{{=grid}}
+
+<!-- {{ if 'analytics' in globals() and analytics:}}
+  <br/>
+  <h3 class="is-size-3">Analytics</h3>
+  {{=analytics}}
+{{pass}} -->

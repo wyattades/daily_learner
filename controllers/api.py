@@ -7,6 +7,13 @@ def _get_session():
         raise HTTP(403, 'session does not exist or you do not have access')
     return session_record
 
+def _create_model(model_type):
+
+    Model = MODELS[model_type]
+    if Model is None: raise HTTP(500, 'Invalid model type')
+
+    return Model()
+
 @auth.requires_login()
 @auth.requires_signature()
 def train_model():
@@ -17,10 +24,7 @@ def train_model():
 
         session_record.update_record(training=True)
 
-        Model = MODELS[session_record.model_type]
-        if Model is None: raise HTTP(500, 'Invalid model type')
-
-        model = Model()
+        model = _create_model(session_record.model_type)
         try:
             model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
         except ToSmallDataSetException:
@@ -32,7 +36,7 @@ def train_model():
         stats = model.train()
         session_record.update_record(model=model.save_model(), training=False, stats=stats, last_trained=request.now)
 
-    return True
+    return response.json()
 
 
 @auth.requires_login()
@@ -52,15 +56,25 @@ def training_status():
 @auth.requires_signature()
 def predict():
     session_record = _get_session()
+    model = _create_model(session_record.model_type)
 
-    print(request.vars)
-
+    data_in = []
     for label in session_record.labels:
-        if label not in request.vars:
+        val = request.vars[label]
+        data_in.append(val)
+        if val is None or val == '':
             raise HTTP(400, 'Must provide all session labels')
 
-    prediction = None
-    # prediction = ml.predict(session_record.model, request.vars)
-    # IncorrectPredictSizeException
+    if session_record.model is None:
+        raise HTTP(400, 'Model is None for prediction')
 
-    return response.json(dict(prediction=prediction))
+    try:
+        model.load_model(session_record.model)
+    except:
+        session_record.update_record(model=None)
+
+    try:
+        prediction = model.predict(data_in)
+        return response.json(dict(prediction=prediction))
+    except IncorrectPredictSizeException:
+        raise HTTP(400, 'Incorrect Predict Size')
