@@ -21,7 +21,7 @@
       console.log(prediction);
       $output.text(prediction || 'Unknown');
     })
-    .fail((res) => console.error);
+    .fail((res) => console.error(res));
   }
 </script>
 {{end page_js}}

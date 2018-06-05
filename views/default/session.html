@@ -36,7 +36,7 @@
     .done(({ stats, status, last_trained }) => {
       if (status === 102 && !interval) interval = setInterval(update_training_status, 1000);
       else if (status !== 102 && interval) clearInterval(interval);
-      
+      console.log(stats);
       $disabled.attr('disabled', status === 102);
 
       if (typeof stats === 'object' && last_trained) {
@@ -45,7 +45,7 @@
         stats.last_trained = last_trained;
         for (var key in stats) {
           if (stats.hasOwnProperty(key)) {
-            $stats.find('[data-stats="' + key + '"]').text(stats[key] || 'NA');
+            $stats.find('[data-stats="' + key + '"]').text(typeof stats[key] === 'number' ? stats[key] : 'NA');
           }
         }
         $stats.show();

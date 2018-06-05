@@ -251,7 +251,7 @@ def session():
         title = 'Edit Session'
         crumbs = [
             ('Sessions', URL('default', 'session')),
-            (session_record.name, URL('default', 'session/%d' % grid.update_form.record.id)),
+            (grid.update_form.record.name, URL('default', 'session/%d' % grid.update_form.record.id)),
             ('Edit', ''),
         ]
     else:

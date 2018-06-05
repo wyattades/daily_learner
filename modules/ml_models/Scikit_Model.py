@@ -56,8 +56,7 @@ class ScikitModel(MLmodel):
         pass
 
     def save_model(self):
-        return None
-
+        return b'1'
 
 # def upload_data_test():
 #     s = ScikitModel("Test")

@@ -36,7 +36,7 @@ def train_model():
         stats = model.train()
         session_record.update_record(model=model.save_model(), training=False, stats=stats, last_trained=request.now)
 
-    return response.json()
+    return response.json(dict())
 
 
 @auth.requires_login()
@@ -61,9 +61,9 @@ def predict():
     data_in = []
     for label in session_record.labels:
         val = request.vars[label]
-        data_in.append(val)
         if val is None or val == '':
             raise HTTP(400, 'Must provide all session labels')
+        data_in.append(float(val))
 
     if session_record.model is None:
         raise HTTP(400, 'Model is None for prediction')
@@ -73,8 +73,13 @@ def predict():
     except:
         session_record.update_record(model=None)
 
+    if session_record.model_type == 'ScikitModel':
+        session_entries = get_session_table(session_record.id)
+        model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
+        model.train()
+
     try:
-        prediction = model.predict(data_in)
+        prediction = model.predict(data_in)[0]
         return response.json(dict(prediction=prediction))
     except IncorrectPredictSizeException:
         raise HTTP(400, 'Incorrect Predict Size')
