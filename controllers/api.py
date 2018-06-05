@@ -75,7 +75,8 @@ def predict():
 
     try:
         model.load_model(session_record.model)
-    except:
+    except Exception as e:
+        print('asdadasd a da d sad as', e)
         session_record.update_record(model=None)
 
     if session_record.model_type == 'ScikitModel':
@@ -84,7 +85,7 @@ def predict():
         model.train()
 
     try:
-        prediction = model.predict(data_in)[0]
+        prediction = model.predict(data_in)
         return response.json(dict(prediction=prediction))
     except IncorrectPredictSizeException:
         raise HTTP(400, 'Incorrect Predict Size')

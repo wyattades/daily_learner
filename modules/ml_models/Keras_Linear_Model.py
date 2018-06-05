@@ -36,7 +36,9 @@ class LinearModel(MLmodel):
         return dict(error=mean_squared_error(res,self.__test_results), score=r2_score(res, self.__test_results))
 
     def predict(self, data_in):
-        return self.__model.predict(np.asarray(data_in).reshape(1,-1))
+        res = self.__model.predict(np.asarray(data_in).reshape(1,-1))
+        print('--- predicted', res)
+        return float(res[0])
 
 
     def upload_data(self, data_frame):
@@ -61,33 +63,12 @@ class LinearModel(MLmodel):
 
     def load_model(self, model_bin):
         model_data = pickle.loads(model_bin)
-        self.__model = Model.from_config(model_data.model)
-        self.__model.set_weights(np.array(model_data.weights))
+        m_model, m_weights = model_data['model'], model_data['weights']
 
-        # with open(self.__name + 'blackbox.h5', 'w') as myfile:
-        #     myfile.write(weights)
-        # self.__model.load_weights(self.__name + 'blackbox.h5')
+        self.__model = Sequential.from_config(m_model)
+        self.__model.set_weights(np.array(m_weights))
 
     def save_model(self):
         m_model = self.__model.get_config()
         m_weights = self.__model.get_weights()
         return pickle.dumps(dict(model=m_model, weights=m_weights))
-
-        # m_weights = self.__model.save_weights(self.__name + "blackbox.h5")
-        # with open(self.__name + 'blackbox.h5', 'r') as myfile:
-        #     m_weights = myfile.read()
-        # return m_weights, m_json
-
-
-# def upload_data_test():
-#     s = LinearModel("Test")
-#     DB_LOC = "/mnt/FireCuda/Documents/School/Spring_2018/CMPS183/Keras_test/venv/prices.csv"
-#     my_data = genfromtxt(DB_LOC, delimiter=',')[1:,:]
-#     s.upload_data(my_data)
-#     print(s.train())
-#     res = s.predict([9500,9200,9500])
-# upload_data_test()
-
-
-
-

@@ -30,7 +30,7 @@ class ScikitModel(MLmodel):
         if(len(data_in) != self.__num_attributes):
             raise IncorrectPredictSizeException("Error predicting, input size does not match model")
         res = self.__regr.predict(np.asarray(data_in).reshape(1,-1))
-        return res[0]
+        return float(res[0])
 
     def upload_data(self, data_frame):
         if(len(data_frame) < 5):

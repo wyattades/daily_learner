@@ -35,7 +35,7 @@ class BlackBoxModel(MLmodel):
         model.add(Dense(20, kernel_initializer='normal', activation='sigmoid'))
         model.add(Dense(1, kernel_initializer='normal'))
         model.compile(loss='mean_squared_error', optimizer='adam')
-        model.fit(self.__X_scaled, self.__Y_scaled, epochs=10, batch_size=1000, validation_split=0.3, verbose=1)
+        model.fit(self.__X_scaled, self.__Y_scaled, epochs=10, batch_size=1000, validation_split=0.3, verbose=0)
         self.__model = model
         res = self.__predict_arr(self.__test_data)
         return dict(error=mean_squared_error(res,self.__test_results), score=r2_score(res, self.__test_results))
@@ -43,7 +43,7 @@ class BlackBoxModel(MLmodel):
 
     def predict(self, data_in):
         data_in = self.__X_scale.transform(np.float32(data_in).reshape(1,-1))
-        return self.__Y_scale.inverse_transform(self.__model.predict(data_in))
+        return float(self.__Y_scale.inverse_transform(self.__model.predict(data_in))[0][0])
 
     def __predict_arr(self, data_in):
         data_in = self.__X_scale.transform(np.float32(data_in))
@@ -76,36 +76,14 @@ class BlackBoxModel(MLmodel):
 
     def load_model(self, model_bin):
         model_data = pickle.loads(model_bin)
-        self.__model = Model.from_config(model_data.model)
-        self.__model.set_weights(np.array(model_data.weights))
-        # with open(self.__name+'blackbox.h5', 'w') as myfile:
-        #     myfile.write(weights)
-        # self.__model.load_weights(self.__name + 'blackbox.h5')
+        m_model, m_weights = model_data['model'], model_data['weights']
+
+        self.__X_scale, self.__Y_scale = model_data['x_scale'], model_data['y_scale']
+        
+        self.__model = Sequential.from_config(m_model)
+        self.__model.set_weights(np.array(m_weights))
 
     def save_model(self):
         m_model = self.__model.get_config()
         m_weights = self.__model.get_weights()
-        return pickle.dumps(dict(model=m_model, weights=m_weights))
-        # m_weights = self.__model.save_weights(self.__name+"blackbox.h5")
-        # with open(self.__name+'blackbox.h5', 'r') as myfile:
-        #     m_weights= myfile.read()
-        # return m_weights, m_json
-
-
-# def upload_data_test():
-#     s = BlackBoxModel("Test")
-#     DB_LOC = "/mnt/FireCuda/Documents/School/Spring_2018/CMPS183/Keras_test/venv/prices.csv"
-#     my_data = genfromtxt(DB_LOC, delimiter=',')[1:,:]
-#     s.upload_data(my_data)
-#     s.train()
-#     weights,json = s.save_model()
-#     s = BlackBoxModel("Test")
-#     s.upload_data(my_data)
-#     s.load_model(json,weights)
-#     res = s.predict([10,11,10])
-#     print(res)
-
-# upload_data_test()
-
-
-
+        return pickle.dumps(dict(model=m_model, weights=m_weights, x_scale=self.__X_scale, y_scale=self.__Y_scale))
