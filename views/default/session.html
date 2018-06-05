@@ -31,7 +31,7 @@
   };
 
   var interval;
-  function update_training_status() {
+  function update_training_status() {    
     $.get(API.training_status)
     .done(({ stats, status, last_trained }) => {
       if (status === 102 && !interval) interval = setInterval(update_training_status, 1000);
@@ -63,9 +63,11 @@
   update_training_status();
 
   function trainModel() {
+    console.log('disableedddd');
+    $disabled.attr('disabled', true);
     $.get(API.train_model)
     .done(() => {
-      $disabled.attr('disabled', true);
+      // $disabled.attr('disabled', true);
       update_training_status();
     })
     .fail((res) => setStatus(res && res.status));

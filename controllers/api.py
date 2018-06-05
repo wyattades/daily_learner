@@ -17,14 +17,17 @@ def _create_model(model_type):
 @auth.requires_login()
 @auth.requires_signature()
 def train_model():
+
     session_record = _get_session()
     stats = None
+    print(session_record.training)
     if not session_record.training:
         session_entries = get_session_table(session_record.id)
 
         session_record.update_record(training=True)
 
         model = _create_model(session_record.model_type)
+
         try:
             model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
         except ToSmallDataSetException:

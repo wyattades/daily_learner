@@ -10,4 +10,6 @@ MODELS = {
 }
 
 def rows_to_dataframe(rows, labels):
-  return [ [ row[label] for label in labels ] for row in rows ]
+  _rows = [ [ row[label] for label in labels ] for row in rows ]
+  print(_rows)
+  return _rows
