@@ -18,9 +18,11 @@
 
     $.post(API.predict, vals) // Must use post because we're sending data to web2py
     .done(({ prediction }) => {
-      $output.text(typeof prediction === 'number' ? prediction : 'Invalid');
+      $output.html(typeof prediction === 'number' ? prediction : 'Invalid');
     })
-    .fail((res) => console.error(res));
+    .fail((res) => {
+      $output.html('<span class="has-text-danger">' + res.responseText + '</span>');
+    });
   }
 </script>
 {{end page_js}}

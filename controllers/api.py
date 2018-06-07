@@ -31,7 +31,7 @@ def train_model():
         try:
             model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
         except ToSmallDataSetException:
-            raise HTTP(400, 'DataSet too small')
+            raise HTTP(300, 'DataSet too small')
 
         # def save_model(model):
         #     record.update_record(model=model.save_model(), training=False, stats=model.get_stats())
@@ -67,17 +67,17 @@ def predict():
     for label in session_record.labels:
         val = request.vars[label]
         if val is None or val == '':
-            raise HTTP(400, 'Must provide all session labels')
+            raise HTTP(300, 'Must provide all session labels')
         data_in.append(float(val))
 
     if session_record.model is None:
-        raise HTTP(400, 'Model is None for prediction')
+        raise HTTP(300, 'Model must be trained before prediction')
 
     try:
         model.load_model(session_record.model)
-    except Exception as e:
-        print('asdadasd a da d sad as', e)
+    except:
         session_record.update_record(model=None)
+        raise HTTP(300, 'Model changed types')
 
     if session_record.model_type == 'ScikitModel':
         session_entries = get_session_table(session_record.id)
@@ -88,4 +88,4 @@ def predict():
         prediction = model.predict(data_in)
         return response.json(dict(prediction=prediction))
     except IncorrectPredictSizeException:
-        raise HTTP(400, 'Incorrect Predict Size')
+        raise HTTP(300, 'Incorrect Predict Size')

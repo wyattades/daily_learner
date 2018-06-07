@@ -36,14 +36,14 @@
     .done(({ stats, status, last_trained }) => {
       if (status === 102 && !interval) interval = setInterval(update_training_status, 1000);
       else if (status !== 102 && interval) clearInterval(interval);
-      console.log(stats);
+
       $disabled.attr('disabled', status === 102);
 
       if (typeof stats === 'object' && last_trained) {
         $predict.attr('disabled', false);
 
         stats.last_trained = last_trained;
-        console.log(stats);
+
         for (var key in stats) {
           if (stats.hasOwnProperty(key)) {
             var stat = stats[key];
@@ -52,6 +52,7 @@
             );
           }
         }
+        
         $stats.show();
         $noStats.hide();
       } else {
@@ -68,7 +69,7 @@
 
   function trainModel() {
 
-    $disabled.attr('disabled', true);
+    setStatus(102);
 
     $.get(API.train_model)
     .done(() => {
