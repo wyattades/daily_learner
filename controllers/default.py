@@ -74,6 +74,14 @@ def admin_panel():
 # def download():
 #     return response.download(request, db)
 
+def _label_stats(session_record):
+    label_stats = dict()
+    for i, label in enumerate(session_record.labels):
+        query = 'select max(label_{0}) as max, min(label_{0}) as min, avg(label_{0}) as avg from session_{1};'.format(i, session_record.id)
+        res = db.executesql(query, as_dict=True)
+        label_stats[label] = res[0]
+    return label_stats
+
 def _view_button(row):
     return A(
         SPAN('Go to this Session'),
@@ -102,9 +110,9 @@ def _view_session(session_record):
 
         response.view = 'default/predict.html'
 
-        return dict(session_data=session_record, title='Predict', crumbs=crumbs)
+        return dict(session_data=session_record, title='Predict', crumbs=crumbs, label_stats=_label_stats(session_record))
 
-    # Data upload page
+    # Data import page
     if action == 'import':
         crumbs.append(('Import', ''))
 
@@ -155,6 +163,7 @@ def _view_session(session_record):
         paginate=10,
     )
 
+    label_stats = None
     if grid.update_form:
         crumbs.append(('Edit', ''))
         title = 'Edit Record'
@@ -162,7 +171,7 @@ def _view_session(session_record):
         crumbs.append(('New', ''))
         title = 'New Record'
 
-    return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record)
+    return dict(grid=grid, crumbs=crumbs, title=title, session_data=not action and session_record, label_stats=_label_stats(session_record))
     
 @auth.requires_login()
 def session():
@@ -176,6 +185,11 @@ def session():
             raise HTTP(403)
         return _view_session(session_record)
 
+    # Clear trained model if model_type changes
+    def resetmodel(form):
+        if form.record.model_type != form.vars['model_type']:
+            form.record.update_record(model=None, stats=None)
+
     # Create sessions grid
     query = (db.sessions.owner_id == auth.user_id)
     tl = db.sessions
@@ -184,6 +198,7 @@ def session():
         ui=ui,
         searchable=False,
         onvalidation=check_unique_labels,
+        onupdate=resetmodel,
         oncreate=lambda form: create_session_table(form.vars),
         ondelete=lambda table,id: drop_session_table(id),
         editargs=dict(fields=['name', 'description', 'created_on', 'model_type']),
@@ -198,7 +213,7 @@ def session():
     # Remove 'records found' message
     grid.element('.web2py_counter', replace=None)
 
-    # 
+    # Message shown when there are no sessions
     norecords = grid.element('.web2py_table')
     if norecords:
         content = norecords.components[0]
@@ -233,6 +248,7 @@ def session():
             ('New', ''),
         ]
     elif grid.update_form:
+        # Remove 'Go to Session' button
         grid.elements('.form_header .extra', replace=None)
 
         title = 'Edit Session'

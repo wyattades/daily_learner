@@ -29,15 +29,16 @@ def train_model():
         model = _create_model(MODELS, session_record.model_type)
 
         try:
-            model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
+            model.upload_data(
+                rows_to_dataframe(db(session_entries).select(),
+                session_record.labels + [session_record.result_label])
+            )
         except ToSmallDataSetException:
             raise HTTP(300, 'DataSet too small')
 
-        # def save_model(model):
-        #     record.update_record(model=model.save_model(), training=False, stats=model.get_stats())
-        #     db.commit()
         stats = model.train()
-        session_record.update_record(model=model.save_model(), training=False, stats=stats, last_trained=request.now)
+        session_record.update_record(model=model.save_model(), training=False,
+            stats=stats, last_trained=request.now)
 
     return response.json(dict())
 
@@ -52,7 +53,8 @@ def training_status():
     if session_record.training: status = 102
     elif db(session_table).count() < 5: status = 406
 
-    return response.json(dict(status=status, stats=session_record.stats, last_trained=session_record.last_trained))
+    return response.json(dict(status=status, stats=session_record.stats,
+        last_trained=session_record.last_trained))
 
 
 @auth.requires_login()
@@ -81,7 +83,10 @@ def predict():
 
     if session_record.model_type == 'ScikitModel':
         session_entries = get_session_table(session_record.id)
-        model.upload_data(rows_to_dataframe(db(session_entries).select(), session_record.labels + [session_record.result_label]))
+        model.upload_data(
+            rows_to_dataframe(db(session_entries).select(),
+            session_record.labels + [session_record.result_label])
+        )
         model.train()
 
     try:

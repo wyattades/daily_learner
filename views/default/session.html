@@ -33,13 +33,13 @@
   var interval;
   function update_training_status() {    
     $.get(API.training_status)
-    .done(({ stats, status, last_trained }) => {
+    .done(({ stats, status, last_trained, model_type }) => {
       if (status === 102 && !interval) interval = setInterval(update_training_status, 1000);
       else if (status !== 102 && interval) clearInterval(interval);
 
       $disabled.attr('disabled', status === 102);
 
-      if (typeof stats === 'object' && last_trained) {
+      if (stats && last_trained) {
         $predict.attr('disabled', false);
 
         stats.last_trained = last_trained;
@@ -106,6 +106,7 @@
     To predict using your model, click Predict.
   </p>
   <br/>
+  <p style="margin-bottom: 8px;"><strong>Model Type:</strong> {{=session_data.model_type}}</p>
   <p style="margin-bottom: 8px;">
     <strong>Status:</strong> <span class="has-text-grey" id="status">Pending...</span>
   </p>
@@ -116,6 +117,7 @@
       onclick="window.location.href='{{=URL('default', 'session/{}/predict'.format(session_data.id))}}'" 
       id="predict" disabled>Predict</button>
   </div>
+
   <pre id="stats">
 <strong>Last Trained:</strong> <span data-stats="last_trained">Pending...</span>
 
@@ -124,6 +126,33 @@
 </pre>
 <pre id="no-stats" style="display:none">No statistics available</pre>
 </div>
+
+<h3 class="is-size-3">Statistics</h3>
+<br/>
+<div>
+  <table class="table is-bordered is-narrow is-striped">
+    <thead>
+      <tr>
+        <th class="has-text-">Label</th>
+        <th>Min</th>
+        <th>Average</th>
+        <th>Max</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ for label in label_stats: }}
+      <tr>
+        <td class="has-text-primary">{{=label}}</td>
+        <td>{{=label_stats[label]['min']}}</td>
+        <td>{{=label_stats[label]['avg']}}</td>
+        <td>{{=label_stats[label]['max']}}</td>
+      </tr>
+      {{pass}}
+    </tbody>
+  </table>
+</div>
+<br/>
+
 <h3 class="is-size-3">Data</h3>
 <br/>
 <button class="button" style="float:left;margin-right:16px" onclick="window.location.href='{{=URL('default', 'session/{}/import'.format(session_data.id))}}'">
@@ -132,9 +161,3 @@
 {{pass}}
 
 {{=grid}}
-
-<!-- {{ if 'analytics' in globals() and analytics:}}
-  <br/>
-  <h3 class="is-size-3">Analytics</h3>
-  {{=analytics}}
-{{pass}} -->
