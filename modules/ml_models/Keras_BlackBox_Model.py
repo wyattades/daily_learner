@@ -37,7 +37,7 @@ class BlackBoxModel(MLmodel):
         model.add(Dense(20, kernel_initializer='normal', activation='sigmoid'))
         model.add(Dense(1, kernel_initializer='normal'))
         model.compile(loss='mean_squared_error', optimizer='adam')
-        model.fit(self.__X_scaled, self.__Y_scaled, epochs=300, batch_size=1000, validation_split=0.3, verbose=0)
+        model.fit(self.__X_scaled, self.__Y_scaled, epochs=500, batch_size=1000, validation_split=0.3, verbose=0)
         self.__model = model
         res = self.__predict_arr(self.__test_data)
         return dict(error=mean_squared_error(res,self.__test_results), score=r2_score(res, self.__test_results))
