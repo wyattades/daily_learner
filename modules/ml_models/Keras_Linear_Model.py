@@ -31,7 +31,7 @@ class LinearModel(MLmodel):
         self.__model.add(Dense(20, activation="linear", kernel_initializer="normal"))
         self.__model.add(Dense(1, activation="linear", kernel_initializer="normal"))
         self.__model.compile(loss='mse', optimizer='adam')
-        self.__model.fit(self.__train_data, self.__train_results, epochs=100, batch_size=1000, validation_split=0.3, verbose=0)
+        self.__model.fit(self.__train_data, self.__train_results, epochs=300, batch_size=1000, validation_split=0.3, verbose=0)
         res = self.__model.predict(self.__test_data)
         return dict(error=mean_squared_error(res,self.__test_results), score=r2_score(res, self.__test_results))
 
