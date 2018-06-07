@@ -8,7 +8,6 @@ from keras.layers import Dense
 from keras import backend, optimizers
 from sklearn.metrics import mean_squared_error,  r2_score
 import numpy as np
-from numpy import genfromtxt
 np.random.seed(7)
 
 from time import sleep

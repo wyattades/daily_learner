@@ -9,7 +9,6 @@ from keras.layers import Dense
 from keras import backend, optimizers
 import pickle
 import numpy as np
-from numpy import genfromtxt
 np.random.seed(7)
 
 
@@ -32,7 +31,7 @@ class BlackBoxModel(MLmodel):
     def train(self):
         model = Sequential()
         model.add(Dense(20, input_dim=self.__num_attributes, kernel_initializer='normal', activation='relu'))
-       #model.add(Dense(20, kernel_initializer='normal', activation='tanh'))
+        #model.add(Dense(20, kernel_initializer='normal', activation='tanh'))
         #model.add(Dense(20, kernel_initializer='normal', activation='softmax'))
         model.add(Dense(20, kernel_initializer='normal', activation='sigmoid'))
         model.add(Dense(1, kernel_initializer='normal'))

@@ -77,7 +77,7 @@ def predict():
         model.load_model(session_record.model)
     except:
         session_record.update_record(model=None)
-        raise HTTP(300, 'Model changed types')
+        raise HTTP(300, 'Model is wrong type. Please retrain first.')
 
     if session_record.model_type == 'ScikitModel':
         session_entries = get_session_table(session_record.id)

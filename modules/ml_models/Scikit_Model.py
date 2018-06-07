@@ -3,7 +3,6 @@ from Exceptions import ToSmallDataSetException
 from Exceptions import IncorrectPredictSizeException
 
 import numpy as np
-from numpy import genfromtxt
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -57,21 +56,3 @@ class ScikitModel(MLmodel):
 
     def save_model(self):
         return b'1'
-
-# def upload_data_test():
-#     s = ScikitModel("Test")
-#     DB_LOC = "/mnt/FireCuda/Documents/School/Spring_2018/CMPS183/web2py/applications/project/src/DataSets/AMarch.csv"
-#     my_data = genfromtxt(DB_LOC, delimiter=',')[1:,:]
-#     s.upload_data(my_data)
-#     mse, rs = s.train()
-#     pk_Model = s.save_model()
-#     s = ScikitModel("Test")
-#     s.load_model(my_data,None)
-#     res = s.predict([9000,9000,9000])
-#     print(mse)
-#     print(rs)
-# upload_data_test()
-
-
-
-

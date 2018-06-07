@@ -1,102 +1,107 @@
 {{extend 'layout.html'}}
 
+<h1 class="is-size-1">Tutorial</h1>
+
+<hr/>
 
 <div class="content">
-  <h1>Tutorial</h1>
+    <h4>Step 1: Sessions</h4>
+    <p>
+        Each session represents a machine learning instance with its own unique data and model. <br>
+        You can create a new session by:
+    </p>
+    <ol>
+        <li>Click on <b>Sessions</b> on the right of the tool bar</li>
+        <li>Click on the <b>+ New Sessions</b> button</li>
+        <li>Give a unique name to your session</li>
+        <li>Write a description about the content of this session</li>
+    </ol>
+</div>
 
-    <div class="Step" style="padding-bottom: 30px">
-        <h4>Step 1: Sessions</h4>
-            Each session represents a machine learning instance with its own unique data and model. <br>
-            You can create a new session by:
-            <ol>
-                <li>Click on <b>Sessions</b> on the right of the tool bar</li>
-                <li>Click on the <b>+ New Sessions</b> button</li>
-                <li>Give a unique name to your session</li>
-                <li>Write a description about the content of this session</li>
-            </ol>
-    </div>
+<div class="content">
+    <h4>Step 2: Adding Labels and Selecting a Model</h4>
+    <p>
+        Labels are used to categorize you training data. There are two types of labels, Training Labels and Result Labels. <br>
+        Training labels will correspond to the different variables you are training on, e.g. the different columns of your csv file. <br>
+        You will only have one result label, this will correspond to the answer, or the number you are trying to predict. <br>
+        The model type you select will drasticly vary the results you get, Look at the About page to learn about each of them. <br>
+    </p>
+    <ol>
+        <li>Input the label name in the <b>Labels</b> input field</li>
+        <li>To add the label to your model <b>+</b> button</li>
+        <li>Repeat previous steps till all of your input labels are listed</li>
+        <li>Add your <b>Result Label</b> for the variable you are trying to predict</li>
+        <li>Select your desired model from the <b>Model Type</b> list</li>
+    </ol>
 
-     <div class="Step" style="padding-bottom: 30px">
-        <h4>Step 2: Adding Labels and Selecting a Model</h4>
-         Labels are used to categorize you training data. There are two types of labels, Training Labels and Result Labels. <br>
-         Training labels will correspond to the different variables you are training on, eg. The different columns of your csv file. <br>
-         You will only have one result label, this will correspond to the answer, or the number you are trying to predict. <br>
-         The model type you select will drasticly vary the results you get, Look at the About page to learn about each of them. <br>
-         <ol>
-             <li>Input the label name in the <b>Labels</b> input field</li>
-             <li>To add the label to your model <b>+</b> button</li>
-             <li>Repeat previous steps till all of your input labels are listed</li>
-             <li>Add your <b>Result Label</b> for the variable you are trying to predict</li>
-             <li>Select your desired model from the <b>Model Type</b> list</li>
-         </ol>
+    <h6>Example</h6>
+    <figure>
+        <img src="/daily_learner/static/images/step2.png" width="700px">
+        <figcaption>
+            Figure 1: Example of session creation <br>
+        </figcaption>
+    </figure>
+</div>
 
-        <h6>Example</h6>
-         <figure>
-                    <img src="/daily_learner/static/images/step2.png" width="700px">
-                    <figcaption>
-                        Figure 1: Example of session creation <br>
-                    </figcaption>
-         </figure>
-
-    </div>
-
-    <div class="Step" style="padding-bottom: 30px">
-        <h4>Step 3: Adding Training Data</h4>
+<div class="content">
+    <h4>Step 3: Adding Training Data</h4>
+    <p>
         In this step you will add training data that will correspond to the labels you entered when defining the session.<br>
         You will have two options to upload training data, <b>Bulk Import</b> or <b>Add Record</b> <br>
-        <b>Bulk Import</b> will allow you to upload a .csv file. <br>
-        <b>Add Record</b> will allow you to hand input data. <br>
-        <br>
-        <b>Bulk Import</b>
-         <ol>
-             <li>On the <b>Sessions</b> page click on the <b>Go to this Session</b> for the session you just created</li>
-             <li>Press the <b>Bulk Import</b> button</li>
-             <li>Press the <b>choose a file</b> button</li>
-             <li>Select a .csv file that as a column for all of your input labels and one for you result label(look below for reference)</li>
-             <li>Press the <b>import button</b></li>
-             <li>Your data should show up on your session's home page </li>
-             <li>Note that the larger the .csv file, the longer it will take to import</li>
-         </ol>
-            <figure>
-                    <img src="daily_learner/static/images/step3_1.png" width="500" alt="">
-                    <figcaption>
-                        Figure 2: Example .csv file that is formated correctly for the session in Figure 1 <br>
-                    </figcaption>
-            </figure>
-         <br>
-         <b>Add Record</b>
-         <ol>
-             <li>On the <b>Sessions</b> page click on the <b>Go to this Session</b> for the session you just created</li>
-             <li>Press the <b>Add Record</b> button</li>
-             <li>Fill in the input fields corresponding to each of your input variables</li>
-             <li>Fill in the input field corresponding to the result variable</li>
-             <li>Click the <b>Submit</b> button</li>
-             <li>Repeat these steps until all of your data is imported</li>
-             <li>Your data should show up on your session's home page </li>
-         </ol>
-            <figure>
-                    <img src="daily_learner/static/images/step3_2.png" width="500" alt="">
-                    <figcaption>
-                        Figure 3: Example of adding a record <br>
-                    </figcaption>
-            </figure>
-        <br>
-     </div>
+    </p>
+    <b>Bulk Import</b> will allow you to upload a .csv file. <br>
+    <b>Add Record</b> will allow you to hand input data. <br>
+    <br>
+    <h5>Bulk Import</h5>
+    <ol>
+        <li>On the <b>Sessions</b> page click on the <b>Go to this Session</b> for the session you just created</li>
+        <li>Press the <b>Bulk Import</b> button</li>
+        <li>Press the <b>choose a file</b> button</li>
+        <li>Select a .csv file that as a column for all of your input labels and one for you result label(look below for reference)</li>
+        <li>Press the <b>import button</b></li>
+        <li>Your data should show up on your session's home page </li>
+        <li>Note that the larger the .csv file, the longer it will take to import</li>
+    </ol>
+    <figure>
+            <img src="daily_learner/static/images/step3_1.png" width="500" alt="">
+            <figcaption>
+                Figure 2: Example .csv file that is formated correctly for the session in Figure 1 <br>
+            </figcaption>
+    </figure>
+    <br>
+    <h5>Add Record</h5>
+    <ol>
+        <li>On the <b>Sessions</b> page click on the <b>Go to this Session</b> for the session you just created</li>
+        <li>Press the <b>Add Record</b> button</li>
+        <li>Fill in the input fields corresponding to each of your input variables</li>
+        <li>Fill in the input field corresponding to the result variable</li>
+        <li>Click the <b>Submit</b> button</li>
+        <li>Repeat these steps until all of your data is imported</li>
+        <li>Your data should show up on your session's home page </li>
+    </ol>
+    <figure>
+            <img src="daily_learner/static/images/step3_2.png" width="500" alt="">
+            <figcaption>
+                Figure 3: Example of adding a record <br>
+            </figcaption>
+    </figure>
+    <br>
+</div>
 
-    <div class="Step" style="padding-bottom: 30px">
-        <h4>Step 4: Training and Predicting</h4>
-            Once your data is uploaded you will be able to train your model.<br>
-            When your model is finished training you will be allowed to use it for predictions <br>
-            It is important to note that if you switch the model type of your session, you will need to retrain it <br>
-            <ol>
-                <li>Click the <b>Train Model</b> button</li>
-                <li>Note that the training may take some time</li>
-                <li>The closer the R-Score is to 1, and the smaller the Mean Squared Error, the better the model will preform </li>
-                <li>If you are seeing poor score results, input more data or change your model type</li>
-                <li>Once the model is trained to your satisfaction, press the <b>Predict</b> button </li>
-                <li>Enter input variable values in which you would like your model to predict for</li>
-                <li>Press the <b>Predict</b> button and your result should be displayed below</li>
-            </ol>
-    </div>
-
+<div class="content">
+    <h4>Step 4: Training and Predicting</h4>
+    <p>
+        Once your data is uploaded you will be able to train your model.<br>
+        When your model is finished training you will be allowed to use it for predictions <br>
+        It is important to note that if you switch the model type of your session, you will need to retrain it <br>
+    </p>
+    <ol>
+        <li>Click the <b>Train Model</b> button</li>
+        <li>Note that the training may take some time</li>
+        <li>The closer the R-Score is to 1, and the smaller the Mean Squared Error, the better the model will preform </li>
+        <li>If you are seeing poor score results, input more data or change your model type</li>
+        <li>Once the model is trained to your satisfaction, press the <b>Predict</b> button </li>
+        <li>Enter input variable values in which you would like your model to predict for</li>
+        <li>Press the <b>Predict</b> button and your result should be displayed below</li>
+    </ol>
 </div>
