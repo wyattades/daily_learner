@@ -241,6 +241,10 @@ def session():
             (grid.update_form.record.name, URL('default', 'session/%d' % grid.update_form.record.id)),
             ('Edit', ''),
         ]
+        
+        # Don't allow deleting in update form because it doesn't work
+        grid.update_form.element('#delete_record__row', replace=None)
+
     else:
         title = 'Sessions'
 
