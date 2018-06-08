@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "dev": "gulp",
-    "setup": "python2 -m pip install numpy sklearn keras theano"
+    "dev": "gulp"
   },
   "dependencies": {
     "bulma": "^0.7.1"
