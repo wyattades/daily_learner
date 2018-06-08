@@ -3,7 +3,7 @@
 
 {{block head}}
 <script src="{{=URL('static', 'js/particles.min.js')}}"></script>
-{{end}}
+{{end head}}
 
 
 {{block page_js}}
@@ -34,7 +34,7 @@
     },
   });
 </script>
-{{end}}
+{{end page_js}}
 
 
 {{block header}}
@@ -46,24 +46,46 @@
     </div>
   </div>
 </section>
-{{end}}
+{{end header}}
 
 
-<div class="content">
-<h2>The ability to predict without the pain of machine learning software development</h2>
-<p>
-  Daily learner allows an average user with no programming experience to create a complex regression model.
-  We have done all of the development for you, all you need to do is upload your data and predict away.
-  This site utilizes state of the art machine learning techniques to develop a model for you.
-</p>
-<p>Possible applications</p>
-<ul>
-  <li>Stock price prediction</li>
-  <li>Bio-Medical research data analysis</li>
-  <li>Forest fires and natural disaster prediction</li>
-  <li>Student's classroom performances</li>
-  <li>Farming crop yield</li>
-  <li>Any numeric data that needs to be analyzed</li>
-</ul>
+<section>
+  <h2 class="is-size-3 has-text-centered">The ability to predict without the pain of machine learning software development</h2>
+  <br/>
+  <p class="is-size-5">
+    Daily learner allows an average user with no programming experience to create a complex regression model.
+    We have done all of the development for you, all you need to do is upload your data and predict away.
+    This site utilizes state of the art machine learning techniques to develop a model for you.
+  </p>
+</section>
 
-</div>
+<section class="section">
+  <h2 class="is-size-3 has-text-centered has-text-weight-bold">Possible Applications</h2>
+  <hr/>
+  <div class="columns is-multiline">
+    {{ for app, svg in [
+      ('Stock price prediction', 'stocks.svg'),
+      ('Bio-Medical research data analysis', 'bio.svg'),
+      ('Forest fires and natural disaster prediction', 'disaster.svg'),
+      ('Student\'s classroom performances', 'students.svg'),
+      ('Farming crop yield', 'crops.svg'),
+      ('Any numeric data that needs to be analyzed', 'numeric.svg'),
+    ]: }}
+    <div class="column is-one-third">
+      <center>
+        <img src="{{=URL('static', 'images/' + svg)}}" alt="{{=app}}" width="50%"/>
+        <br/>
+        <br/>
+        <h4 class="is-size-4">{{=app}}</h4>
+      </center>
+    </div>
+    {{pass}}
+  </div>
+  <hr/>
+</section>
+
+<section>
+  <center>
+    <a class="button is-success is-medium" href="{{=URL('default', 'session')}}">Start Machine Learning!</a>
+  </center>
+</section>

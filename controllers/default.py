@@ -35,12 +35,10 @@ ui = dict(
 )
 
 # Static pages
-def index():
-    return dict()
-def about():
-    return dict()
-def tutorial():
-    return dict()
+def index(): return dict()
+def about(): return dict()
+def tutorial(): return dict()
+def models(): return dict()
 
 # User login/register/etc (required for auth)
 def user():

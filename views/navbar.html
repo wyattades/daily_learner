@@ -16,9 +16,13 @@
         <a class="navbar-item" href="{{=URL('default','about')}}">
           About
         </a>
-        <a class="navbar-item" href="{{=URL('default','tutorial')}}">
-          Tutorial
-        </a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="{{=URL('default','tutorial')}}">{{=T('Tutorials')}}</a>
+          <div class="navbar-dropdown is-boxed">
+            <a class="navbar-item" href="{{=URL('default','tutorial')}}">{{=T('General')}}</a>
+            <a class="navbar-item" href="{{=URL('default','models')}}">{{=T('ML Models')}}</a>
+          </div>
+        </div>
       </div>
 
       {{if 'auth' in globals():}}
