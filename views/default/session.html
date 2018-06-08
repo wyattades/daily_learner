@@ -124,9 +124,10 @@
 <strong>R<sup>2</sup>-Score:</strong> <span data-stats="score">Pending...</span>
 <strong>Mean Squared Error:</strong> <span data-stats="error">Pending...</span>
 </pre>
-<pre id="no-stats" style="display:none">No statistics available</pre>
+<pre id="no-stats" style="display:none">No model data</pre>
 </div>
 
+{{ if label_stats: }}
 <h3 class="is-size-3">Statistics</h3>
 <br/>
 <div>
@@ -152,6 +153,7 @@
   </table>
 </div>
 <br/>
+{{pass}}
 
 <h3 class="is-size-3">Data</h3>
 <br/>

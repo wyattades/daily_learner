@@ -75,9 +75,14 @@ def admin_panel():
 def _label_stats(session_record):
     label_stats = dict()
     for i, label in enumerate(session_record.labels):
+        # Get min, max, and avg
         query = 'select max(label_{0}) as max, min(label_{0}) as min, avg(label_{0}) as avg from session_{1};'.format(i, session_record.id)
         res = db.executesql(query, as_dict=True)
         label_stats[label] = res[0]
+
+        # There are no records to get stats on!
+        if res[0]['min'] is None:
+            return None
     return label_stats
 
 def _view_button(row):

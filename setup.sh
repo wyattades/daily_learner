@@ -13,24 +13,24 @@ echo '
 }
 ' > ~/.keras/keras.json
 
-echo "
-default_application='daily_learner'
+echo '
+default_application="daily_learner"
 
 routes_onerror = [
-  ('*/*', '/daily_learner/error/index')
+  ("*/*", "/daily_learner/error/index")
 ]
 
 routes_in = [
-  ('/admin/$anything', '/admin/$anything'),
-  ('/$app/static/$anything', '/$app/static/$anything'),
-  ('/$app/error/$anything', '/$app/error/$anything'),
-  ('/$app/api/$anything', '/$app/api/$anything'),
-  ('/$anything', '/daily_learner/default/$anything'),
+  ("/admin/$anything", "/admin/$anything"),
+  ("/$app/static/$anything", "/$app/static/$anything"),
+  ("/$app/error/$anything", "/$app/error/$anything"),
+  ("/$app/api/$anything", "/$app/api/$anything"),
+  ("/$anything", "/daily_learner/default/$anything"),
 ]
 routes_out = [ (x, y) for (y, x) in routes_in[-1:] ]
-" > ../../routes.py
+' > ../../routes.py
 
-echo "
+echo '
 daily_learner setup completed successfully!
-"
+'
 
